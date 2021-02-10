@@ -1,0 +1,95 @@
+/*IF
+	Global("Player_Change_Subrace","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("Player_Change_Subrace","GLOBAL",1)
+		SetGlobalTimer("SubraceChangeTimer","GLOBAL",3)
+		Continue()
+END*/
+
+IF
+	//GlobalTimerExpired("SubraceChangeTimer","GLOBAL")
+	Global("Player_Change_Subrace","GLOBAL",0) //1
+	Switch("Pl_SUBRACE","GLOBAL")
+THEN
+	RESPONSE #1
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",1))
+		ActionOverride(Player1,ApplySpellRES("SR_AASIM",Myself))
+		Continue()
+	RESPONSE #2
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",2))
+		ActionOverride(Player1,ApplySpellRES("SR_TIEFL",Myself))
+		Continue()
+	RESPONSE #3
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",3))
+		ActionOverride(Player1,ApplySpellRES("SR_DROW",Myself))
+		Continue()
+	RESPONSE #4
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",4))
+		ActionOverride(Player1,ApplySpellRES("SR_EWILD",Myself))
+		Continue()
+	RESPONSE #5
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",5))
+		ActionOverride(Player1,ApplySpellRES("SR_DWGLD",Myself))
+		Continue()
+	RESPONSE #6
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",6))
+		ActionOverride(Player1,ApplySpellRES("SR_DUERG",Myself))
+		Continue()
+	RESPONSE #7
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",7))
+		ActionOverride(Player1,ApplySpellRES("SR_HLSTR",Myself))
+		Continue()
+	RESPONSE #8
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",8))
+		ActionOverride(Player1,ApplySpellRES("SR_HLGHO",Myself))
+		Continue()
+	RESPONSE #9
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",9))
+		ActionOverride(Player1,ApplySpellRES("SR_SVIRF",Myself))
+		Continue()
+	RESPONSE #10
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",0))
+		Continue()
+END
+
+IF
+	Global("Player_Change_Subrace","GLOBAL",0)
+THEN
+	RESPONSE #1
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		Continue()
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

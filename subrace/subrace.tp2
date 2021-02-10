@@ -1,0 +1,615 @@
+BACKUP ~subrace/backup~
+AUTHOR ~tipun. tipun.iwd@google.com~
+VERSION ~0.2~ 
+
+README ~subrace/readme.txt~
+
+ALWAYS
+  OUTER_SET INSTALLED_LEUI = (MOD_IS_INSTALLED ~leui.tp2~ 0) OR (MOD_IS_INSTALLED ~leui-iwdee.tp2~ 0) OR
+                             (MOD_IS_INSTALLED ~leui-sod.tp2~ 0) OR (MOD_IS_INSTALLED ~leui-bg1ee.tp2~ 0)
+  OUTER_SET INSTALLED_DSUI = (FILE_EXISTS_IN_GAME ~RGCGWDE.png~)
+END
+
+LANGUAGE ~Russian~
+	     ~ru_RU~
+	     ~subrace/ru_RU/subrace.tra~
+LANGUAGE ~English~
+	     ~en_US~
+	     ~subrace/en_US/subrace.tra~
+
+BEGIN ~Subrace mod for Baldur's Gate Enhanced Edition (BG1, BG:SoD, BG2, EET)~
+
+OUTER_SET sr_colors = 0
+OUTER_WHILE ( !IS_AN_INT ~sr_colors~ ) OR ( sr_colors < 1 ) OR ( sr_colors > 2 ) BEGIN
+	PRINT ~Change subrace colors(Hair and Skin)?
+  1] Yes
+  2] No~
+	ACTION_READLN sr_colors
+END
+
+INCLUDE ~subrace/functions.tph~
+//INCLUDE ~subrace/subrace_lua_func.tph~
+
+INCLUDE ~subrace/subrace_lua.tph~
+
+
+LAF ADD_SPLPROT_ENTRY INT_VAR value_hex=1 STR_VAR label="OUTDOOR"    definition="0x106  0x1  8" RET outdoor   =index END
+LAF ADD_SPLPROT_ENTRY INT_VAR value_hex=1 STR_VAR label="NOTOUTDOOR" definition="0x106  0x1  9" RET notoutdoor=index END
+
+LAF ADD_IDS_ENTRY
+  INT_VAR minValue = 0 preferredValue = 140
+  STR_VAR idsFile = "SPLSTATE.IDS" identifier = "CRE_BLINDED_IWD"
+  RET CRE_BLINDED_IWD = value
+END
+
+CLEAR_IDS_MAP
+
+/* Baldur */
+ACTION_DEFINE_ASSOCIATIVE_ARRAY campscr BEGIN ~BALDUR~   => ~~ END
+ACTION_DEFINE_ASSOCIATIVE_ARRAY campscr BEGIN ~BALDUR25~ => ~~ END
+ACTION_IF (FILE_EXISTS_IN_GAME ~CAMPAIGN.2DA~) BEGIN
+	COPY_EXISTING ~CAMPAIGN.2DA~ ~override~
+		COUNT_2DA_ROWS 4 rws
+		FOR ( i = 0 ; i < rws ; ++i ) BEGIN
+			READ_2DA_ENTRY i 1 4 scrp
+			TO_UPPER scrp
+			PATCH_IF (!VARIABLE_IS_SET $campscr(~%scrp%~)) BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY campscr BEGIN ~%scrp%~ => ~~ END
+			END
+		END
+		BUT_ONLY
+END
+
+ACTION_PHP_EACH campscr AS wbcs => dummy BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%wbcs%.bcs~ THEN BEGIN
+		EXTEND_TOP ~%wbcs%.bcs~ ~subrace/append_bald.baf~
+	END
+END
+
+//ACTION_IF (NOT FILE_EXISTS_IN_GAME ~STARTSOD.MOS~) BEGIN
+//	COPY ~subrace/STARTSOD.MOS~ ~override~
+//END
+//COPY ~subrace/SRZLINE.MOS~ ~override~
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~SUNSCOH.BAM~) BEGIN
+	COPY ~subrace/SUNSCOH.BAM~ ~override~
+END
+COPY ~subrace/SRSUBICO.bam~ ~override~
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~DFF_P39.WAV~) BEGIN
+	COPY ~subrace/DFF_P39.WAV~ ~override~
+END
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~IDPR113B.BAM~) BEGIN
+	COPY ~subrace/IDPR113B.BAM~ ~override~
+END
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~IDPR113C.BAM~) BEGIN
+	COPY ~subrace/IDPR113C.BAM~ ~override~
+END
+
+OUTER_SPRINT t_aasimar   @11
+OUTER_SPRINT t_tiefling  @12
+OUTER_SPRINT t_drow      @13
+OUTER_SPRINT t_wild_elf  @14
+OUTER_SPRINT t_dwfduerg  @19
+OUTER_SPRINT t_dwfgold   @18
+OUTER_SPRINT t_hflstrong @15
+OUTER_SPRINT t_hflhide   @16
+OUTER_SPRINT t_svirfn    @17
+OUTER_SPRINT t_podr      @20
+
+/* Subrace: XXX
+OUTER_SPRINT t_aasimar   ~%t_podr%%t_aasimar%~
+OUTER_SPRINT t_tiefling  ~%t_podr%%t_tiefling%~
+OUTER_SPRINT t_drow      ~%t_podr%%t_drow%~
+OUTER_SPRINT t_wild_elf  ~%t_podr%%t_wild_elf%~
+OUTER_SPRINT t_dwfduerg  ~%t_podr%%t_dwfduerg%~
+OUTER_SPRINT t_dwfgold   ~%t_podr%%t_dwfgold%~
+OUTER_SPRINT t_hflstrong ~%t_podr%%t_hflstrong%~
+OUTER_SPRINT t_hflhide   ~%t_podr%%t_hflhide%~
+OUTER_SPRINT t_svirfn    ~%t_podr%%t_svirfn%~*/
+
+OUTER_SET text_aasimar   = RESOLVE_STR_REF(~%t_aasimar%~)
+OUTER_SET text_tiefling  = RESOLVE_STR_REF(~%t_tiefling%~)
+OUTER_SET text_drow      = RESOLVE_STR_REF(~%t_drow%~)
+OUTER_SET text_wild_elf  = RESOLVE_STR_REF(~%t_wild_elf%~)
+OUTER_SET text_dwfduerg  = RESOLVE_STR_REF(~%t_dwfduerg%~)
+OUTER_SET text_dwfgold   = RESOLVE_STR_REF(~%t_dwfgold%~)
+OUTER_SET text_hflstrong = RESOLVE_STR_REF(~%t_hflstrong%~)
+OUTER_SET text_hflhide   = RESOLVE_STR_REF(~%t_hflhide%~)
+OUTER_SET text_svirfn    = RESOLVE_STR_REF(~%t_svirfn%~)
+/*
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_aasimar   STR_VAR bam_file="SRSUBICO" RET text_aasimar=index   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_drow      STR_VAR bam_file="SRSUBICO" RET text_drow=index      END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_dwfduerg  STR_VAR bam_file="SRSUBICO" RET text_dwfduerg=index  END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_dwfgold   STR_VAR bam_file="SRSUBICO" RET text_dwfgold=index   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_hflhide   STR_VAR bam_file="SRSUBICO" RET text_hflhide=index   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_hflstrong STR_VAR bam_file="SRSUBICO" RET text_hflstrong=index END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_svirfn    STR_VAR bam_file="SRSUBICO" RET text_svirfn=index    END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_tiefling  STR_VAR bam_file="SRSUBICO" RET text_tiefling=index  END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_wild_elf  STR_VAR bam_file="SRSUBICO" RET text_wild_elf=index  END*/
+
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_aasimar   STR_VAR bam_file="SRSUBICO" RET text_aasimar=index   Ztext_aasimar=strref   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_drow      STR_VAR bam_file="SRSUBICO" RET text_drow=index      Ztext_drow=strref      END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_dwfduerg  STR_VAR bam_file="SRSUBICO" RET text_dwfduerg=index  Ztext_dwfduerg=strref  END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_dwfgold   STR_VAR bam_file="SRSUBICO" RET text_dwfgold=index   Ztext_dwfgold=strref   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_hflhide   STR_VAR bam_file="SRSUBICO" RET text_hflhide=index   Ztext_hflhide=strref   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_hflstrong STR_VAR bam_file="SRSUBICO" RET text_hflstrong=index Ztext_hflstrong=strref END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_svirfn    STR_VAR bam_file="SRSUBICO" RET text_svirfn=index    Ztext_svirfn=strref    END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_tiefling  STR_VAR bam_file="SRSUBICO" RET text_tiefling=index  Ztext_tiefling=strref  END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_wild_elf  STR_VAR bam_file="SRSUBICO" RET text_wild_elf=index  Ztext_wild_elf=strref  END
+
+//BLOCK SUBRACE SPELLS
+COPY ~subrace/spell.spl~ ~override/SR_AASIM.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_aasimar END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=154 parameter2=3 END
+  END
+   //Wisdom +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=49 power=1  target=2 timing=1  parameter1=1 END
+   //Charisma +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1=1 END
+   //Acid resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=27 power=1  target=2 timing=9 parameter1=20 END
+   //Cold resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=28 power=1  target=2 timing=9 parameter1=20 END
+   //Electricity resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=29 power=1  target=2 timing=9 parameter1=20 END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63 power=1  target=2 timing=9 END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSNSCOH" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+COPY ~subrace/spell.spl~ ~override/SR_TIEFL.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_tiefling END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=84 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=19 parameter2=6 END
+  END
+   //intlligence +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=19 power=1  target=2 timing=1  parameter1=1 END
+   //Dexterity +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=15 power=1  target=2 timing=1  parameter1=1 END
+   //Fire resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=30 power=1  target=2 timing=9 parameter1=20 END
+   //Cold resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=28 power=1  target=2 timing=9 parameter1=20 END
+   //Electricity resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=29 power=1  target=2 timing=9 parameter1=20 END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63 power=1  target=2 timing=9 END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRBLIND" END
+   //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+COPY ~subrace/spell.spl~ ~override/SR_DROW.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_drow END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=182 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=79 parameter2=6 END
+  END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //intlligence +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=19  power=1 target=2 timing=1  parameter1=1 END
+   //Charisma +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1=1 END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Reputation
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=108 power=1 target=2 timing=1 parameter1="-2" END
+   //Magic resistance 40/45/50/55/60
+ // LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=40 probability1=20  END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=45 probability1=40  probability2=21 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 probability1=60  probability2=41 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=55 probability1=80  probability2=61 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=60 probability1=100 probability2=81 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+
+COPY ~subrace/spell.spl~ ~override/SR_EWILD.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_wild_elf END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=1 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=29 parameter2=6 END
+  END
+   //Constitution +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=10  power=1 target=2 timing=1  parameter1=1 END
+   //intlligence -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=19  power=1 target=2 timing=1  parameter1="-1" END
+
+COPY ~subrace/spell.spl~ ~override/SR_HLSTR.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflstrong END
+   // +1 axe star
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=233 power=1 target=2 timing=9 parameter1=1 parameter2=65628 END
+
+/*COPY ~subrace/spell.spl~ ~override/SR_HLGH1.spl~
+   //Find traps +5
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=324 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_HLGH1 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=321 power=1 target=2 duration=1 STR_VAR resource=SR_HLGHO END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflhide END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=5 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SPCL412" END
+
+CREATE EFF SR_HLGHO
+	WRITE_LONG 0x10 146
+	WRITE_LONG 0x14 2
+	WRITE_LONG 0x20 1
+	WRITE_LONG 0x24 1
+	WRITE_ASCII 0x30 ~SR_HLGH1~ (8)*/
+
+COPY ~subrace/spell.spl~ ~override/SR_HLGHO.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflhide END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=324 power=1 target=2 duration=1 parameter1=205 parameter2=115 STR_VAR resource=SR_HLGHO END
+   //Find traps +5
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=5 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SPCL412" END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 parameter1=12 parameter2=3 timing=9 STR_VAR resource=SR_HLGHO END
+
+COPY ~subrace/spell.spl~ ~override/SR_SVIRF.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_svirfn END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=10 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=0 parameter2=6 END
+  END
+   //Dexterity +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=15  power=1 target=2 timing=1  parameter1=1 END
+   //Wisdom +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=49  power=1 target=2 timing=1  parameter1=1 END
+   //Strength -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=44  power=1 target=2 timing=1  parameter1="-1" END
+   //Charisma -1
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+   //Magic resistance 40/45/50/55/60
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=40 probability1=20  END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=45 probability1=40  probability2=21 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 probability1=60  probability2=41 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=55 probability1=80  probability2=61 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=60 probability1=100 probability2=81 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 END
+   //+2 Missile AC
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=0  power=1  target=2 timing=9  parameter1=2 parameter2=2 END
+   //Non detection
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  END
+   //Save vs. all +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=325 power=1 target=2 timing=9 parameter1=1 END
+   //Attack bonus
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=161 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=112 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=111 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=165 parameter2=4  STR_VAR resource="SRSVATK" END
+   //Find traps +10
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Hide in shadows +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 timing=9 parameter1=10 END
+   //Hide in shadows no outdoors
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRSVSHD" END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVMIM" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVINV" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVBLR" END
+  //XP bonus - 85%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=85 parameter2=2 END
+  //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=324 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_SVIRF END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  
+
+COPY ~subrace/spell.spl~ ~override/SR_DWGLD.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfgold END
+   //Charisma +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1=1 END
+   //Dexterity -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=15  power=1 target=2 timing=1  parameter1="-1" END
+   //+2 AC vs giants
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=5 parameter2=3  STR_VAR resource="SRDWACG" END
+   //Attack bonus
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=2   parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=172 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=124 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=116 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=123 parameter2=4  STR_VAR resource="SRSVATK" END
+
+COPY ~subrace/spell.spl~ ~override/SR_DUERG.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfduerg END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=63 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=5 parameter2=6 END
+  END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Move silently +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=59  power=1 target=2 timing=9 parameter1=20 END
+   //+2 AC vs giants
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=5 parameter2=3  STR_VAR resource="SRDWACG" END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVINV" END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63  power=1 target=2 timing=9 END
+   //Reputation
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=108 power=1 target=2 timing=1 parameter1="-1" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+   //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=324 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_DUERG END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+
+//BLOCKEND
+
+//BLOCK ABILITY SPELLS
+//SRSNSCOH (IDPR113)
+ADD_PROJECTILE ~subrace/idpro000.pro~
+COPY ~subrace/IDPR113.spl~ ~override/SRSNSCOH.spl~
+	SAY 0x08 @40
+	SAY 0x50 @41
+	LPM CONVERT_SPL_TO_INNATE
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=324 STR_VAR resource="SRSNSCOH" END
+	LPF ALTER_SPELL_HEADER INT_VAR projectile=idpro000 END
+//SRBLIND  (SPWI106)
+COPY_EXISTING ~SPWI106.spl~ ~override/SRBLIND.spl~
+	LPM CONVERT_SPL_TO_INNATE
+//SRFFIRE  (sppr116)  (sppr100)
+COPY ~subrace/SPPR100.SPL~ ~override/SRFFIRE.spl~
+	SAY 0x08 @42
+	SAY 0x50 @43
+	LPM CONVERT_SPL_TO_INNATE
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=318 STR_VAR resource="SRFFIRE" END
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=206 STR_VAR resource="SRFFIRE" END
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=139 parameter1=RESOLVE_STR_REF(@42) END
+//SRSVMIM  (SPWI212) - Mirror Image
+COPY_EXISTING ~SPWI212.spl~ ~override/SRSVMIM.spl~
+	LPM CONVERT_SPL_TO_INNATE
+//SRSVINV  (spwi206) - Invisibility
+COPY_EXISTING ~spwi206.spl~ ~override/SRSVINV.spl~
+	LPM CONVERT_SPL_TO_INNATE
+	LPF ALTER_SPELL_HEADER INT_VAR target=5 speed=0 END
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode="-1" target=1 END
+	LPF DELETE_SPELL_EFFECT INT_VAR opcode_to_delete=174 END
+	WRITE_SHORT 0x22 0
+//SRSVBLR  (spwi201) - Biur
+COPY_EXISTING ~spwi201.spl~ ~override/SRSVBLR.spl~
+	LPM CONVERT_SPL_TO_INNATE
+//BLOCKEND
+
+//BLOCK SPELLS XP
+//SRSVATK.EFF - +1 THAC0
+COPY ~subrace/effect.EFF~ ~override/SRSVATK.EFF~
+  WRITE_LONG  0x10 278
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x1c 1
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+
+//SRDWACG.EFF - +4 AC
+COPY ~subrace/effect.EFF~ ~override/SRDWACG.EFF~
+  WRITE_LONG  0x10 0
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x1c 4
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+
+//Drow blindness
+//SRDBLIND.EFF - Cast Spell SRDBLIND.spl
+COPY ~subrace/effect.EFF~ ~override/SRDBLIND.EFF~
+  WRITE_LONG  0x10 146
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x20 1
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+  WRITE_ASCII 0x30 ~SRDBLIND~ (8)
+
+COPY ~subrace/spell.spl~ ~override/SRDBLIND.spl~
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=321 target=2 timing=1 STR_VAR resource="SRDBLIND" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=324 power=1 target=2 parameter2=%notoutdoor% duration=1 STR_VAR resource="SRDBLIND" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=324 power=1 target=2 parameter2=90 duration=1 STR_VAR resource="SRDBLIND" END
+  //-1 THAC0
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=278 power=1 target=2 parameter1="-1" duration=60 END
+  //-1 Saves
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=325 power=1 target=2 parameter1="-1" duration=60 END
+  //Hide in shadows
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 parameter1="-5" duration=60 END
+  //Open locks
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=90 power=1  target=2 parameter1="-5" duration=60 END
+  //Find traps
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91 power=1  target=2 parameter1="-5" duration=60 END
+  //Pick pockets
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=92 power=1  target=2 parameter1="-5" duration=60 END
+  //Move silently
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=59 power=1  target=2 parameter1="-5" duration=60 END
+  //Set trap
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=277 power=1  target=2 parameter1="-5" duration=60 END
+  //Visual range
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=262 power=1  target=2 parameter1="-4" duration=60 END
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 parameter2=8  duration=60 END
+
+
+//Hide in shadows no outdoors
+//SRSVSHD.EFF - Apply effect list SRSVSHD.spl
+COPY ~subrace/effect.EFF~ ~override/SRSVSHD.EFF~
+  WRITE_LONG  0x10 146
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x20 1
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+  WRITE_ASCII 0x30 ~SRSVSHD~ (8)
+
+COPY ~subrace/spell.spl~ ~override/SRSVSHD.spl~
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=321 target=2 timing=1 STR_VAR resource="SRSVSHD" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=324 power=1  target=2 parameter2=%outdoor% duration=1 STR_VAR resource="SRSVSHD" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 duration=60 parameter1=10 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 duration=60 parameter1=10 END
+//BLOCKEND
+
+//BLOCK NPC
+COPY ~subrace/spell.spl~ ~override/SR_VCBA.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_drow END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+
+ACTION_FOR_EACH scr IN VICONIA_ BDVICONI VICONIA VICO25 BAELOTH BDBAELOT BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+  	OUTER_SPRINT ~SUBRA~ ~VCBA~
+  	OUTER_SET lc_subr = 3
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END
+
+COPY ~subrace/spell.spl~ ~override/SR_HAER.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_tiefling END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRBLIND" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+ACTION_FOR_EACH scr IN HAERDALI HAER25 BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+    OUTER_SPRINT ~SUBRA~ ~HAER~
+    OUTER_SET lc_subr = 2
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END
+
+COPY ~subrace/spell.spl~ ~override/SR_KORG.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfduerg END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Move silently +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=59  power=1 target=2 timing=9 parameter1=20 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVINV" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+
+ACTION_FOR_EACH scr IN KORGAN KORG25 BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+    OUTER_SPRINT ~SUBRA~ ~KORG~
+    OUTER_SET lc_subr = 6
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END
+
+COPY ~subrace/spell.spl~ ~override/SR_CAEL.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_aasimar END
+   //Acid resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=27 power=1  target=2 timing=9 parameter1=20 END
+   //Electricity resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=29 power=1  target=2 timing=9 parameter1=20 END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63 power=1  target=2 timing=9 END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSNSCOH" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+ACTION_FOR_EACH scr IN BDCAELAR BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+	OUTER_SET lc_subr = 1
+    OUTER_SPRINT ~SUBRA~ ~CAEL~
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END
+//BLOCKEND
+
+//BLOCK DROW_DUERGAR
+ACTION_FOR_EACH cre IN bddrowf2 bddrowfm chevil06 cuguard drofod01 drofod03 drow01 drow03 drow06 loveone3 ohbdro01 sendro01 sendro03 sendro05 senfod01 sengua05 suraam uddrow27 uddrow28 udlesa udrunner udsola01 udsola02
+                       bdkaelet bdshapur chevil07 cuardul cuphaer drofod02 drofod04 drow02 drow04 drow05 drow07 gortan3 gorwom04 ohbdro04 sendro02 senfod02 udardul uddrow29 uddrow31 udimrae udphae01 udphae02 vicpri01 bdumar
+                       drowsor drowspe drowvan malavon malavons ginafae nym 
+                       DIRTLLEW
+                       l#nsnym BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%cre%.cre~ BEGIN
+		COPY_EXISTING ~%cre%.cre~ ~override~
+			//Set spell state
+			LPF ADD_CRE_EFFECT INT_VAR opcode=328 power=1 target=1 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+	END
+END
+////BLOCKEND
+
+//BLOCK CHARACTER RECORD
+//COPY_EXISTING ~ui.menu~ ~override~
+//	LPM APPLY_SPELL_SUBRACE_TO_CRE
+//	BUT_ONLY_IF_IT_CHANGES
+
+COPY_EXISTING ~ui.menu~ ~override~
+	LPM SHOW_IN_CHARACTER_RECORD
+	BUT_ONLY_IF_IT_CHANGES
+//BLOCKEND
+
+
+
+
+
+
+
+
+
+
+
+
+
+

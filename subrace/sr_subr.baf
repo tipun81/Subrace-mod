@@ -1,0 +1,9 @@
+IF
+	Global("ChangeSubrace","LOCALS",0)
+THEN
+	RESPONSE #100
+		SetGlobal("ChangeSubrace","LOCALS",1)
+		ApplySpellRES("SR_%SUBRA%",Myself)
+		SetGlobal("SUBRACE","LOCALS",%lc_subr%)
+		Continue()
+END
