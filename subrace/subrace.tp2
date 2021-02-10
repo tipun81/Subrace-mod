@@ -1,6 +1,6 @@
 BACKUP ~subrace/backup~
 AUTHOR ~tipun. tipun.iwd@google.com~
-VERSION ~0.2~ 
+VERSION ~0.2.1~ 
 
 README ~subrace/readme.txt~
 
@@ -527,7 +527,7 @@ ACTION_FOR_EACH scr IN HAERDALI HAER25 BEGIN
   END
 END
 
-COPY ~subrace/spell.spl~ ~override/SR_KORG.spl~
+/*COPY ~subrace/spell.spl~ ~override/SR_KORG.spl~
   //Portrait icon
   LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfduerg END
   //Set spell state
@@ -551,7 +551,7 @@ ACTION_FOR_EACH scr IN KORGAN KORG25 BEGIN
     OUTER_SET lc_subr = 6
     EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
   END
-END
+END*/
 
 COPY ~subrace/spell.spl~ ~override/SR_CAEL.spl~
   //Portrait icon
