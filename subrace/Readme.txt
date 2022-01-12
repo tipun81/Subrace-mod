@@ -78,6 +78,17 @@ Advantages:
 Disadvantages:
  no
 
+MOON ELF
+The moon elves have chosen forests for solitude, as have many of their brethren. They worship the moon and derive their magical power from it. On a full moon, moon elves become especially powerful. They are the most sociable among their fellows and easily make contact with other races. Often, out of curiosity and a thirst for adventure, they join the groups of adventurers. More than other elves, they are drawn to a variety of paths. Moon elves love music and make excellent bards.
+They have fair skin, sometimes with a bluish tinge, and silver-white, black, or blue hair. Their eyes are blue or green with gold spots.
+
+Advantages:
+ Move Silently and Hide In Shadows: +10
+ Charisma: +1
+
+Disadvantages:
+ Constitution: -1
+
 GHOSTWISE HALFLING
 Ghostwise halflings are the feral, reclusive cousins of lightfoot and strongheart halflings. They are found most often in the southern forests of the Realms living in small communities. Ghostwise halflings are rarely seen in large cities, but occasionally set out to explore the world for reasons known only to them. Visitors to ghostwise settlements often report that the halflings have kinship so tight with their fellows that they can communicate without speaking.
 
@@ -166,6 +177,11 @@ AkelPad             http://akelpad.sourceforge.net/ru/index.php
 -------------------
 5. Version History
 -------------------
+
+Version 0.2.2
+- Removed the display of annoying messages for some subraces (drow, etc.)
+- Added Moon elf subrace
+- Added display of subrace during character creation
 
 Version 0.2
 - change of descriptions of subraces

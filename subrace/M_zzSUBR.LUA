@@ -1,14 +1,15 @@
 --subrStrings = {
---	NONE_STRINGS = "",
---	AASIMAR = "Аасимар",
---	TIEFLING = "Тифлинг",
---	DROW = "Дроу",
---	WILD_ELF = "Дикий эльф",
---	DWARF_GOLD = "Золотой дварф",
---	DWARF_GRAY = "Серый дварф",
---	HALFLING_STRONGHEART = "Крепкий полурослик",
---	HALFLING_GHOSTWISE = "Скрытный полурослик",
---	GNOME_DEEP = "Глубинный гном",
+--10. NONE_STRINGS = "",
+--1.  AASIMAR = "Аасимар",
+--2.  TIEFLING = "Тифлинг",
+--3.  DROW = "Дроу",
+--4.  WILD_ELF = "Дикий эльф",
+--5.  DWARF_GOLD = "Золотой дварф",
+--6.  DWARF_GRAY = "Серый дварф",
+--7.  HALFLING_STRONGHEART = "Крепкий полурослик",
+--8.  HALFLING_GHOSTWISE = "Скрытный полурослик",
+--9.  GNOME_DEEP = "Глубинный гном",
+--11. MOON_ELF = "Лунный эльф",
 --}
 
 --function subt(char)
@@ -23,6 +24,7 @@
 --	elseif (var == 7) then return " / " .. subrStrings.HALFLING_STRONGHEART
 --	elseif (var == 8) then return " / " .. subrStrings.HALFLING_GHOSTWISE
 --	elseif (var == 9) then return " / " .. subrStrings.GNOME_DEEP
+--	elseif (var == 9) then return " / " .. subrStrings.MOON_ELF
 --	end
 --end
 
@@ -39,6 +41,7 @@ function subt(chr)
 	elseif (chr == 7) then return Infinity_FetchString(%hflstrong_title%) --subrStrings.HALFLING_STRONGHEART
 	elseif (chr == 8) then return Infinity_FetchString(%hflhide_title%) --subrStrings.HALFLING_GHOSTWISE
 	elseif (chr == 9) then return Infinity_FetchString(%svirfn_title%) --subrStrings.GNOME_DEEP
+	elseif (chr == 11) then return Infinity_FetchString(%moon_elf_title%) --subrStrings.MOON_ELF
 	else return ""
 	end
 end
@@ -55,7 +58,7 @@ function zzApplyRaseSpell(chr)
 	elseif (chr == 9) then C:ApplySpellRES("SR_SVIRF",chargen) --subrStrings.GNOME_DEEP
 	end
 	C:SetGlobal("Pl_SUBRACE","GLOBAL",10)
-end
+end --currSubrace
 
 function getSubraceTitleButton(currS)
 	if subt(currS) ~= "" then
@@ -93,6 +96,7 @@ function createSubraceTable(race)
 			{%Zelf_title%, %bgelf%, 10},
 			{%Zdrow_title%, %drow_desc%, 3},
 			{%Zwild_elf_title%, %wild_elf_desc%, 4},
+			{%Zmoon_elf_title%, %moon_elf_desc%, 11},
         }    
 	end
 	if race == 3 then --halfelf
@@ -139,6 +143,8 @@ function createSubraceTableEx()
 		{%Zhflstrong_title%, %hflstrong_desc%, 7},
 		{%Zhflhide_title%, %hflhide_desc%, 8},
 		{%Zsvirfn_title%, %svirfn_desc%, 9},
+		{0, 0, 10},
+		{%Zmoon_elf_title%, %moon_elf_desc%, 11},
 		}
 end
 createSubraceTableEx()
@@ -186,14 +192,65 @@ end
 function SubRaceAndRaceOrGeneralHelp(sbr)
 	race = chargen.races[currentChargenRace]
 	if race then
-		if sbr > 0 and sbr < 10 then
-			return Infinity_FetchString(race.desc) .. '\n\n--------------------------\n\n' .. Infinity_FetchString(sbSubraceDataEx[sbr][2])
+		if (sbr > 0 and sbr ~= 10) then
+			return Infinity_FetchString(race.desc) .. '\n\n________________________\n\n' .. Infinity_FetchString(sbSubraceDataEx[sbr][2])
 		else
 			return Infinity_FetchString(race.desc)
 		end
 	else
 		return Infinity_FetchString(17237)
 	end
+end
+
+zZraceStrings = {
+	{nil, %bghuman_r%, 1},
+	{nil, %bgelf_r%, 2},
+	{nil, %bghalfelf_r%, 3},
+	{nil, %bgdwarf_r%, 4},
+	{nil, %bghalfling_r%, 5},
+	{nil, %bggnome_r%, 6},
+	{nil, %bghalforc_r%, 7},
+}
+--nil race subrace idx
+zZsubraceStrings = {
+	{nil, 1, %text_aasimar%, 1},
+	{nil, 1, %text_tiefling%, 2},
+	{nil, 2, %text_drow%, 3},
+	{nil, 2, %text_wild_elf%, 4},
+	{nil, 4, %text_dwfgold%, 5},
+	{nil, 4, %text_dwfduerg%, 6},
+	{nil, 5, %text_hflstrong%, 7},
+	{nil, 5, %text_hflhide%, 8},
+	{nil, 6, %text_svirfn%, 9},
+	{nil, 0, -1, 10},
+	{nil, 2, %text_moon_elf%, 11},
+}
+function zzCreateCharInfo(info)
+	local rc = 0
+	local str, stra, strb = ''
+	local x, y = 0, 0
+	if currentChargenRace ~= nil and currSubrace > 0 and currSubrace ~= 10 then
+		for k, v in pairs(zZraceStrings) do
+			if currentChargenRace == v[3] then
+				rc = v[3]
+				str = Infinity_FetchString(v[2])
+				break
+			end
+		end
+		if rc > 0 then
+			x, y = string.find(info, str, 1, true)
+			if x ~= nil then
+				stra = string.sub(info, 1, y)
+				strb = string.sub(info, y + 1)
+				for k, v in pairs(zZsubraceStrings) do
+					if rc == v[2] and currSubrace == v[4] then
+						info = stra .. ' ( ' .. Infinity_FetchString(v[3]) .. ' )' .. strb
+					end
+				end
+			end
+		end
+	end
+	return info
 end
 
 %higlihtseq%

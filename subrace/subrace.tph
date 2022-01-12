@@ -1,0 +1,825 @@
+
+INCLUDE ~subrace/functions.tph~
+
+INCLUDE ~subrace/subrace_lua.tph~
+
+
+LAF ADD_SPLPROT_ENTRY INT_VAR value_hex=1 STR_VAR label="OUTDOOR"    definition="0x106  0x1  8" RET outdoor   =index END
+LAF ADD_SPLPROT_ENTRY INT_VAR value_hex=1 STR_VAR label="NOTOUTDOOR" definition="0x106  0x1  9" RET notoutdoor=index END
+
+LAF ADD_IDS_ENTRY
+  INT_VAR minValue = 0 preferredValue = 140
+  STR_VAR idsFile = "SPLSTATE.IDS" identifier = "CRE_BLINDED_IWD"
+  RET CRE_BLINDED_IWD = value
+END
+
+CLEAR_IDS_MAP
+
+/* Baldur */
+ACTION_DEFINE_ASSOCIATIVE_ARRAY campscr BEGIN ~BALDUR~   => ~~ END
+ACTION_DEFINE_ASSOCIATIVE_ARRAY campscr BEGIN ~BALDUR25~ => ~~ END
+ACTION_IF (FILE_EXISTS_IN_GAME ~CAMPAIGN.2DA~) BEGIN
+	COPY_EXISTING ~CAMPAIGN.2DA~ ~override~
+		COUNT_2DA_ROWS 4 rws
+		FOR ( i = 0 ; i < rws ; ++i ) BEGIN
+			READ_2DA_ENTRY i 1 4 scrp
+			TO_UPPER scrp
+			PATCH_IF (!VARIABLE_IS_SET $campscr(~%scrp%~)) BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY campscr BEGIN ~%scrp%~ => ~~ END
+			END
+		END
+		BUT_ONLY
+END
+
+ACTION_PHP_EACH campscr AS wbcs => dummy BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%wbcs%.bcs~ THEN BEGIN
+		EXTEND_TOP ~%wbcs%.bcs~ ~subrace/append_bald.baf~
+	END
+END
+
+
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~SUNSCOH.BAM~) BEGIN
+	COPY ~subrace/SUNSCOH.BAM~ ~override~
+END
+COPY ~subrace/SRSUBICO.bam~ ~override~
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~DFF_P39.WAV~) BEGIN
+	COPY ~subrace/DFF_P39.WAV~ ~override~
+END
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~IDPR113B.BAM~) BEGIN
+	COPY ~subrace/IDPR113B.BAM~ ~override~
+END
+ACTION_IF (NOT FILE_EXISTS_IN_GAME ~IDPR113C.BAM~) BEGIN
+	COPY ~subrace/IDPR113C.BAM~ ~override~
+END
+
+/*OUTER_SPRINT t_aasimar   @11
+OUTER_SPRINT t_tiefling  @12
+OUTER_SPRINT t_drow      @13
+OUTER_SPRINT t_wild_elf  @14
+OUTER_SPRINT t_dwfduerg  @19
+OUTER_SPRINT t_dwfgold   @18
+OUTER_SPRINT t_hflstrong @15
+OUTER_SPRINT t_hflhide   @16
+OUTER_SPRINT t_svirfn    @17
+OUTER_SPRINT t_podr      @20
+OUTER_SPRINT t_moon_elf  @1103
+
+
+OUTER_SET text_aasimar   = RESOLVE_STR_REF(~%t_aasimar%~)
+OUTER_SET text_tiefling  = RESOLVE_STR_REF(~%t_tiefling%~)
+OUTER_SET text_drow      = RESOLVE_STR_REF(~%t_drow%~)
+OUTER_SET text_wild_elf  = RESOLVE_STR_REF(~%t_wild_elf%~)
+OUTER_SET text_dwfduerg  = RESOLVE_STR_REF(~%t_dwfduerg%~)
+OUTER_SET text_dwfgold   = RESOLVE_STR_REF(~%t_dwfgold%~)
+OUTER_SET text_hflstrong = RESOLVE_STR_REF(~%t_hflstrong%~)
+OUTER_SET text_hflhide   = RESOLVE_STR_REF(~%t_hflhide%~)
+OUTER_SET text_svirfn    = RESOLVE_STR_REF(~%t_svirfn%~)
+OUTER_SET text_moon_elf  = RESOLVE_STR_REF(~%t_moon_elf%~)*/
+
+
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_aasimar   STR_VAR bam_file="SRSUBICO" RET text_aasimar=index   Ztext_aasimar=strref   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_drow      STR_VAR bam_file="SRSUBICO" RET text_drow=index      Ztext_drow=strref      END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_dwfduerg  STR_VAR bam_file="SRSUBICO" RET text_dwfduerg=index  Ztext_dwfduerg=strref  END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_dwfgold   STR_VAR bam_file="SRSUBICO" RET text_dwfgold=index   Ztext_dwfgold=strref   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_hflhide   STR_VAR bam_file="SRSUBICO" RET text_hflhide=index   Ztext_hflhide=strref   END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_hflstrong STR_VAR bam_file="SRSUBICO" RET text_hflstrong=index Ztext_hflstrong=strref END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_svirfn    STR_VAR bam_file="SRSUBICO" RET text_svirfn=index    Ztext_svirfn=strref    END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_tiefling  STR_VAR bam_file="SRSUBICO" RET text_tiefling=index  Ztext_tiefling=strref  END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_wild_elf  STR_VAR bam_file="SRSUBICO" RET text_wild_elf=index  Ztext_wild_elf=strref  END
+LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_moon_elf  STR_VAR bam_file="SRSUBICO" RET text_moon_elf=index  Ztext_moon_elf=strref  END
+
+//BLOCK SUBRACE SPELLS
+COPY ~subrace/spell.spl~ ~override/SR_AASIM.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_aasimar END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=154 parameter2=3 END
+  END
+   //Wisdom +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=49 power=1  target=2 timing=1  parameter1=1 END
+   //Charisma +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1=1 END
+   //Acid resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=27 power=1  target=2 timing=9 parameter1=20 END
+   //Cold resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=28 power=1  target=2 timing=9 parameter1=20 END
+   //Electricity resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=29 power=1  target=2 timing=9 parameter1=20 END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63 power=1  target=2 timing=9 END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSNSCOH" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+COPY ~subrace/spell.spl~ ~override/SR_TIEFL.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_tiefling END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=84 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=19 parameter2=6 END
+  END
+   //intlligence +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=19 power=1  target=2 timing=1  parameter1=1 END
+   //Dexterity +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=15 power=1  target=2 timing=1  parameter1=1 END
+   //Fire resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=30 power=1  target=2 timing=9 parameter1=20 END
+   //Cold resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=28 power=1  target=2 timing=9 parameter1=20 END
+   //Electricity resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=29 power=1  target=2 timing=9 parameter1=20 END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63 power=1  target=2 timing=9 END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRBLIND" END
+   //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+COPY ~subrace/spell.spl~ ~override/SR_DROW.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_drow END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=182 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7 power=1   target=2 timing=9  parameter1=79 parameter2=6 END
+  END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //intlligence +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=19  power=1 target=2 timing=1  parameter1=1 END
+   //Charisma +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1=1 END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Reputation
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=108 power=1 target=2 timing=1 parameter1="-2" END
+   //Magic resistance 40/45/50/55/60
+ // LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=40 probability1=20  END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=45 probability1=40  probability2=21 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 probability1=60  probability2=41 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=55 probability1=80  probability2=61 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=60 probability1=100 probability2=81 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+
+COPY ~subrace/spell.spl~ ~override/SR_EWILD.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_wild_elf END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=1 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=29 parameter2=6 END
+  END
+   //Constitution +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=10  power=1 target=2 timing=1  parameter1=1 END
+   //intlligence -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=19  power=1 target=2 timing=1  parameter1="-1" END
+
+COPY ~subrace/spell.spl~ ~override/SR_EMOON.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_moon_elf END
+   //Charisma +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1=1 END
+   //Hide in shadows +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 timing=9 parameter1=10 END
+   //Move silently +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=59  power=1 target=2 timing=9 parameter1=10 END
+   //Constitution -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=10  power=1 target=2 timing=1  parameter1="-1" END
+
+COPY ~subrace/spell.spl~ ~override/SR_HLSTR.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflstrong END
+   // +1 axe star
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=233 power=1 target=2 timing=9 parameter1=1 parameter2=65628 END
+
+/*COPY ~subrace/spell.spl~ ~override/SR_HLGH1.spl~
+   //Find traps +5
+  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_HLGH1 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=321 power=1 target=2 duration=1 STR_VAR resource=SR_HLGHO END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflhide END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=5 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SPCL412" END
+
+CREATE EFF SR_HLGHO
+	WRITE_LONG 0x10 146
+	WRITE_LONG 0x14 2
+	WRITE_LONG 0x20 1
+	WRITE_LONG 0x24 1
+	WRITE_ASCII 0x30 ~SR_HLGH1~ (8)*/
+
+COPY ~subrace/spell.spl~ ~override/SR_HLGHO.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflhide END
+  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=205 parameter2=115 STR_VAR resource=SR_HLGHO END
+   //Find traps +5
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=5 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SPCL412" END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 parameter1=12 parameter2=3 timing=9 STR_VAR resource=SR_HLGHO END
+
+COPY ~subrace/spell.spl~ ~override/SR_SVIRF.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_svirfn END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=10 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=0 parameter2=6 END
+  END
+   //Dexterity +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=15  power=1 target=2 timing=1  parameter1=1 END
+   //Wisdom +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=49  power=1 target=2 timing=1  parameter1=1 END
+   //Strength -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=44  power=1 target=2 timing=1  parameter1="-1" END
+   //Charisma -1
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+   //Magic resistance 40/45/50/55/60
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=40 probability1=20  END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=45 probability1=40  probability2=21 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 probability1=60  probability2=41 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=55 probability1=80  probability2=61 END
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=60 probability1=100 probability2=81 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=166 power=1 target=2 timing=9 parameter1=50 END
+   //+2 Missile AC
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=0  power=1  target=2 timing=9  parameter1=2 parameter2=2 END
+   //Non detection
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  END
+   //Save vs. all +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=325 power=1 target=2 timing=9 parameter1=1 END
+   //Attack bonus
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=161 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=112 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=111 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=165 parameter2=4  STR_VAR resource="SRSVATK" END
+   //Find traps +10
+  //LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Hide in shadows +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 timing=9 parameter1=10 END
+   //Hide in shadows no outdoors
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRSVSHD" END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVMIM" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVINV" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVBLR" END
+  //XP bonus - 85%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=85 parameter2=2 END
+  //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_SVIRF END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  
+
+COPY ~subrace/spell.spl~ ~override/SR_DWGLD.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfgold END
+   //Charisma +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1=1 END
+   //Dexterity -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=15  power=1 target=2 timing=1  parameter1="-1" END
+   //+2 AC vs giants
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=5 parameter2=3  STR_VAR resource="SRDWACG" END
+   //Attack bonus
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=2   parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=172 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=124 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=116 parameter2=4  STR_VAR resource="SRSVATK" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=123 parameter2=4  STR_VAR resource="SRSVATK" END
+
+COPY ~subrace/spell.spl~ ~override/SR_DUERG.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfduerg END
+   //Skin color
+  PATCH_IF ( sr_colors = 1 ) BEGIN
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=63 parameter2=3 END
+   //Hair color
+    LPF ADD_SPELL_EFFECT INT_VAR opcode=7  power=1  target=2 timing=9  parameter1=5 parameter2=6 END
+  END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Move silently +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=59  power=1 target=2 timing=9 parameter1=20 END
+   //+2 AC vs giants
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=177 power=1 target=2 timing=9 parameter1=5 parameter2=3  STR_VAR resource="SRDWACG" END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVINV" END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63  power=1 target=2 timing=9 END
+   //Reputation
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=108 power=1 target=2 timing=1 parameter1="-1" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+   //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+  //Charisma -1
+  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_DUERG END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
+
+//BLOCKEND
+
+//BLOCK ABILITY SPELLS
+//SRSNSCOH (IDPR113)
+ADD_PROJECTILE ~subrace/idpro000.pro~
+COPY ~subrace/IDPR113.spl~ ~override/SRSNSCOH.spl~
+	SAY 0x08 @40
+	SAY 0x50 @41
+	LPM CONVERT_SPL_TO_INNATE
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=324 opcode=318 STR_VAR resource="SRSNSCOH" END
+	LPF ALTER_SPELL_HEADER INT_VAR projectile=idpro000 END
+//SRBLIND  (SPWI106)
+COPY_EXISTING ~SPWI106.spl~ ~override/SRBLIND.spl~
+	LPM CONVERT_SPL_TO_INNATE
+//SRFFIRE  (sppr116)  (sppr100)
+COPY ~subrace/SPPR100.SPL~ ~override/SRFFIRE.spl~
+	SAY 0x08 @42
+	SAY 0x50 @43
+	LPM CONVERT_SPL_TO_INNATE
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=318 STR_VAR resource="SRFFIRE" END
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=206 STR_VAR resource="SRFFIRE" END
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode=139 parameter1=RESOLVE_STR_REF(@42) END
+//SRSVMIM  (SPWI212) - Mirror Image
+COPY_EXISTING ~SPWI212.spl~ ~override/SRSVMIM.spl~
+	LPM CONVERT_SPL_TO_INNATE
+//SRSVINV  (spwi206) - Invisibility
+COPY_EXISTING ~spwi206.spl~ ~override/SRSVINV.spl~
+	LPM CONVERT_SPL_TO_INNATE
+	LPF ALTER_SPELL_HEADER INT_VAR target=5 speed=0 END
+	LPF ALTER_SPELL_EFFECT INT_VAR match_opcode="-1" target=1 END
+	LPF DELETE_SPELL_EFFECT INT_VAR opcode_to_delete=174 END
+	WRITE_SHORT 0x22 0
+//SRSVBLR  (spwi201) - Biur
+COPY_EXISTING ~spwi201.spl~ ~override/SRSVBLR.spl~
+	LPM CONVERT_SPL_TO_INNATE
+//BLOCKEND
+
+//BLOCK SPELLS XP
+//SRSVATK.EFF - +1 THAC0
+COPY ~subrace/effect.EFF~ ~override/SRSVATK.EFF~
+  WRITE_LONG  0x10 278
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x1c 1
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+
+//SRDWACG.EFF - +4 AC
+COPY ~subrace/effect.EFF~ ~override/SRDWACG.EFF~
+  WRITE_LONG  0x10 0
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x1c 4
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+
+//Drow blindness
+//SRDBLIND.EFF - Cast Spell SRDBLIND.spl
+COPY ~subrace/effect.EFF~ ~override/SRDBLIND.EFF~
+  WRITE_LONG  0x10 146
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x20 1
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+  WRITE_ASCII 0x30 ~SRDBLIND~ (8)
+
+COPY ~subrace/spell.spl~ ~override/SRDBLIND.spl~
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=321 target=2 timing=1 STR_VAR resource="SRDBLIND" END
+  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 parameter2=%notoutdoor% duration=1 STR_VAR resource="SRDBLIND" END
+  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 parameter2=90 duration=1 STR_VAR resource="SRDBLIND" END
+  //-1 THAC0
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=278 power=1 target=2 parameter1="-1" duration=60 END
+  //-1 Saves
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=325 power=1 target=2 parameter1="-1" duration=60 END
+  //Hide in shadows
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 parameter1="-5" duration=60 END
+  //Open locks
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=90 power=1  target=2 parameter1="-5" duration=60 END
+  //Find traps
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91 power=1  target=2 parameter1="-5" duration=60 END
+  //Pick pockets
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=92 power=1  target=2 parameter1="-5" duration=60 END
+  //Move silently
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=59 power=1  target=2 parameter1="-5" duration=60 END
+  //Set trap
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=277 power=1  target=2 parameter1="-5" duration=60 END
+  //Visual range
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=262 power=1  target=2 parameter1="-4" duration=60 END
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 parameter2=8  duration=60 END
+
+
+//Hide in shadows no outdoors
+//SRSVSHD.EFF - Apply effect list SRSVSHD.spl
+COPY ~subrace/effect.EFF~ ~override/SRSVSHD.EFF~
+  WRITE_LONG  0x10 146
+  WRITE_LONG  0x14 2
+  WRITE_LONG  0x20 1
+  WRITE_LONG  0x24 1
+  WRITE_SHORT 0x2c 100
+  WRITE_ASCII 0x30 ~SRSVSHD~ (8)
+
+COPY ~subrace/spell.spl~ ~override/SRSVSHD.spl~
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=321 target=2 timing=1 STR_VAR resource="SRSVSHD" END
+  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1  target=2 parameter2=%outdoor% duration=1 STR_VAR resource="SRSVSHD" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 duration=60 parameter1=10 END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 duration=60 parameter1=10 END
+//BLOCKEND
+
+//BLOCK NPC
+COPY ~subrace/spell.spl~ ~override/SR_VCBA.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_drow END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRFFIRE" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+
+ACTION_FOR_EACH scr IN VICONIA_ BDVICONI VICONIA VICO25 BAELOTH BDBAELOT BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+  	OUTER_SPRINT ~SUBRA~ ~VCBA~
+  	OUTER_SET lc_subr = 3
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END
+
+COPY ~subrace/spell.spl~ ~override/SR_HAER.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_tiefling END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRBLIND" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+ACTION_FOR_EACH scr IN HAERDALI HAER25 BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+    OUTER_SPRINT ~SUBRA~ ~HAER~
+    OUTER_SET lc_subr = 2
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END
+
+/*COPY ~subrace/spell.spl~ ~override/SR_KORG.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfduerg END
+  //Set spell state
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+   //Find traps +10
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
+   //Save vs. spells +1
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
+   //Move silently +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=59  power=1 target=2 timing=9 parameter1=20 END
+   //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVINV" END
+   //Day blindness
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
+  //XP bonus - 90%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
+
+ACTION_FOR_EACH scr IN KORGAN KORG25 BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+    OUTER_SPRINT ~SUBRA~ ~KORG~
+    OUTER_SET lc_subr = 6
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END*/
+
+COPY ~subrace/spell.spl~ ~override/SR_CAEL.spl~
+  //Portrait icon
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_aasimar END
+   //Acid resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=27 power=1  target=2 timing=9 parameter1=20 END
+   //Electricity resistance +20
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=29 power=1  target=2 timing=9 parameter1=20 END
+   //Infravision
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=63 power=1  target=2 timing=9 END
+  //Give innate ability
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSNSCOH" END
+  //XP bonus - 95%
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=95 parameter2=2 END
+
+ACTION_FOR_EACH scr IN BDCAELAR BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
+	OUTER_SET lc_subr = 1
+    OUTER_SPRINT ~SUBRA~ ~CAEL~
+    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
+  END
+END
+//BLOCKEND
+
+//BLOCK DROW_DUERGAR
+ACTION_FOR_EACH cre IN bddrowf2 bddrowfm chevil06 cuguard drofod01 drofod03 drow01 drow03 drow06 loveone3 ohbdro01 sendro01 sendro03 sendro05 senfod01 sengua05 suraam uddrow27 uddrow28 udlesa udrunner udsola01 udsola02
+                       bdkaelet bdshapur chevil07 cuardul cuphaer drofod02 drofod04 drow02 drow04 drow05 drow07 gortan3 gorwom04 ohbdro04 sendro02 senfod02 udardul uddrow29 uddrow31 udimrae udphae01 udphae02 vicpri01 bdumar
+                       drowsor drowspe drowvan malavon malavons ginafae nym 
+                       DIRTLLEW
+                       l#nsnym BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%cre%.cre~ BEGIN
+		COPY_EXISTING ~%cre%.cre~ ~override~
+			//Set spell state
+			LPF ADD_CRE_EFFECT INT_VAR opcode=328 power=1 target=1 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
+	END
+END
+////BLOCKEND
+
+//BLOCK CHARACTER RECORD
+//COPY_EXISTING ~ui.menu~ ~override~
+//	LPM APPLY_SPELL_SUBRACE_TO_CRE
+//	BUT_ONLY_IF_IT_CHANGES
+
+COPY_EXISTING ~ui.menu~ ~override~
+	LPM SHOW_IN_CHARACTER_RECORD
+	BUT_ONLY_IF_IT_CHANGES
+//BLOCKEND
+
+/* NEW SUBRACES
+
+
+SHIELD DWARVES: Shield dwarves, also known as mountain dwarves were among the most common of the dwarven peoples. Once the rulers of mighty kingdoms across FaerГ»n, the shield dwarves had since fallen by the wayside after centuries of warfare with their goblinoid enemies. Since then, shield dwarves were less commonly seen throughout FaerГ»n, though during the last decades the subrace, spurred on by the Thunder Blessing, began to retake an important role in local politics.
+
+Shield dwarves have the following traits:
+
+вЂ“ +2 racial bonus to Saving Throws vs. Paralysis/Poison/Death, vs. Rod/Staff/Wand, and vs. Spell, with additional bonuses based on Constitution.
+
+вЂ“ Infravision.
+
+вЂ“ +10% Open Locks, +15% Find Traps, +5% Detect Illusion, +10% Set Traps.
+
+вЂ“ +1 Constitution, -1 Dexterity, -1 Charisma.
+
+вЂ“ +1 racial bonus to attack rolls against orcs (including half-orcs) and goblinoids (including goblins, hobgoblins, and bugbears.
+
+ 
+
+GOLD DWARVES: Gold dwarves, also known as hill dwarves are the aloof, confident and sometimes proud subrace of dwarves that predominantly came from the Great Rift. They are known to be particularly stalwart warriors and shrewd traders. Gold dwarves are often trained specifically to battle the horrendous aberrations that were known to come from the Underdark.
+
+ 
+
+Gold dwarves have the following traits:
+
+вЂ“ +2 racial bonus to Saving Throws vs. Paralysis/Poison/Death, vs. Rod/Staff/Wand, and vs. Spell, with additional bonuses based on Constitution.
+
+вЂ“ Infravision.
+
+вЂ“ +10% Open Locks, +15% Find Traps, +5% Detect Illusion, +10% Set Traps.
+
+вЂ“ +1 Constitution, -2 Dexterity.
+
+вЂ“ +1 racial bonus to attack rolls against aberrations.
+
+ 
+
+GRAY DWARVES: Also known as duergar, the gray dwarves of the Forgotten Realms live even deeper underground than their shield dwarf and gold dwarf cousins. The duergar share little in common with other dwarves and practice slavery in their monstrous subterranean cities. Often motivated by greed and a thirst for power, gray dwarves are known throughout the Realms as devious, efficient warriors. Duergar almost always have gray hair and skin.
+
+ 
+
+Gray dwarves (duergar) have the following traits:
+
+вЂ“ +4 racial bonus to Saving Throws vs. Paralysis/Poison/Death and vs. Rod/Staff/Wand, with additional bonuses based on Constitution.
+
+вЂ“ +3 racial bonus vs. Spell, with additional bonuses based on Constitution.
+
+вЂ“ Infravision.
+
+вЂ“ Light Sensitivity: -1 penalty to hit rolls, damage rolls and saving throws made in the daylight.
+
+вЂ“ Spell-like abilities: Invisibility once per day.
+
+вЂ“ +10% Open Locks, +30% Find Traps, +10% Detect Illusion, +10% Set Traps, +20% Move Silently
+
+вЂ“ +1 Constitution, -1 Dexterity, -2 Charisma.
+
+вЂ“ +1 racial bonus to attack rolls against mind flayers.
+
+вЂ“ Duergar are more powerful than other races and gain 90% of overall experience.
+
+ 
+
+MOON ELVES: Moon elves are the most common sort of elves in FaerГ»n. Also called silver elves, they have fair skin (sometimes tinged with blue) and hair of silver-white, black, or blue. (Humanlike colors are rare, but possible). Their eyes are blue or green, with gold flecks. They are the elven subrace most tolerant of humankind, and most half elves are descended from moon elves.
+
+ 
+
+Moon elves have the following traits:
+
+вЂ“ 90% resistance against charm and sleep magics.
+
+вЂ“ Infravision.
+
+вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
+
+вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
+
+вЂ“ +1 Dexterity, -1 Constitution.
+
+ 
+
+SUN ELVES: Sun elves are less common across FaerГ»n than moon elves, because most live on Evermeet, where nonelves are not allowed. Also called gold elves, they have bronze skin, golden blond, copper, or black hair, and green or gold eyes. These are seen as the most civilized and haughty elves, preferring to remain separate from nonelven races.
+
+ 
+
+Sun elves have the following traits:
+
+вЂ“ 90% resistance against charm and sleep magics.
+
+вЂ“ Infravision.
+
+вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
+
+вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
+
+вЂ“ +1 Intelligence, -1 Constitution.
+
+ 
+
+WILD ELVES: The very rare wild elves are rarely seen by others, because they live in the heart of thick forests and they have incredible skill at keeping hidden. Also called green elves, their skin tends to be dark brown, and their hair ranges from black to light brown, lightening to silvery white with age.
+
+ 
+
+Wild elves have the following traits:
+
+вЂ“ 90% resistance against charm and sleep magics.
+
+вЂ“ Infravision.
+
+вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
+
+вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
+
+вЂ“ +1 Dexterity, -1 Intelligence.
+
+ 
+
+WOOD ELVES: Wood elves are reclusive, but less so than the almost feral wild elves. Also called copper elves, they have coppery skin tinged with green, and brown, green, or hazel eyes. Their hair is usually brown or black, with blond and coppery-red occasionally found.
+
+ 
+
+Wood elves have the following traits:
+
+вЂ“ 90% resistance against charm and sleep magics.
+
+вЂ“ Infravision.
+
+вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
+
+вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
+
+вЂ“ +1 Strength, +1 Dexterity, -1 Intelligence, -1 Charisma.
+
+ 
+
+STAR ELVES: The green depths of the Yuirwood hide an ancient secret long forgotten by folk beyond AglarondвЂ™s borders, and not widely known even withinвЂ”the star elves, an elven subrace that retreated from FaerГ»n to an extraplanar refuge known as SildГ«yuir. Sometimes referred to in ancient texts as mithral elves, the star elves concealed the existence of their hidden kingdom for almost two thousand years, leaving behind nothing but mysterious ruins and old, strong magic in the stone circles of the Yuirwood.
+
+ 
+
+Star elves have the following traits:
+
+вЂ“ 90% resistance against charm and sleep magics.
+
+вЂ“ Infravision.
+
+вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
+
+вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
+
+вЂ“ +1 Charisma, -1 Constitution.
+
+ 
+
+DROW: Dark elves, also known as drow, are the subterranean cousins of moon elves. Their black skin and pale hair are a curse for their allegiance with the spider goddess, Lolth. Drow societies are usually ruled by cruel priestesses of Lolth and their noble houses. Dark elves are known for their arrogance, cruelty, and penchant for civil war.
+
+ 
+
+Drow have the following traits:
+
+вЂ“ 90% resistance against charm and sleep magics.
+
+вЂ“ Magic Resistance: 20% (+1% per character level).
+
+вЂ“ +1 racial bonus to Saving Throws vs. Spell.
+
+вЂ“ Spell-like abilities: Faerie Fire three times per day.
+
+вЂ“ Infravision.
+
+вЂ“ Light Sensitivity: -1 penalty to hit rolls, damage rolls and saving throws made in the daylight.
+
+вЂ“ +1 racial bonus to attack rolls with crossbows, short swords, and scimitars.
+
+вЂ“ +10% Pick Pockets, +15% Move Silently, +30% Hide in Shadows.
+
+вЂ“ +1 Dexterity, -1 Constitution, +1 Intelligence, +1 Charisma.
+
+вЂ“ Drow are more powerful than other races and gain 90% of overall experience.
+
+ 
+
+LIGHTFOOT HALFLINGS: The most common type of halflings seen in the world, the lightfoots are the most likely to give in to their desire to wander. They are at home living side by side with folk of many different races and cultures. Lightfoot halflings are more likely to worship nonhalfling deities than any other halfling subrace.
+
+ 
+
+Lightfoot halflings have the following traits:
+вЂ“ +2 bonus to Saving Throws vs. Paralysis/Poison/Death, vs. Rod/Staff/Wand, and vs. Spell, with additional bonuses based on Constitution.
+вЂ“ +1 racial bonus to attack rolls with slings.
+вЂ“ +5% Open Locks, +5% Find Traps, +5% Pick Pockets, +10% Move Silently, +15% Hide in Shadows.
+вЂ“ +1 Dexterity, -1 Strength, -1 Wisdom.
+
+ 
+
+GHOSTWISE HALFLINGS: Ghostwise halflings are the feral, reclusive cousins of lightfoot and strongheart halflings. They are found most often in the southern forests of the Realms living in small communities. Ghostwise halflings are rarely seen in large cities, but occasionally set out to explore the world for reasons known only to them. Visitors to ghostwise settlements often report that the halflings have kinship so tight with their fellows that they can communicate without speaking.
+
+ 
+
+Ghostwise halflings have the following traits:
+вЂ“ +2 bonus to Saving Throws vs. Paralysis/Poison/Death and vs. Rod/Staff/Wand, with additional bonuses based on Constitution.
+
+вЂ“ +1 bonus to Saving Throws vs. Spell, with additional bonuses based on Constitution.
+вЂ“ +1 racial bonus to attack rolls with slings and spears.
+вЂ“ +15% Find Traps, +20% Move Silently, +20% Hide in Shadows.
+вЂ“ +1 Dexterity, -1 Strength, -1 Wisdom.
+
+ 
+
+STRONGHEART HALFLINGS: While the lightfoot halflings value the experience of travel and the sight of new lands and peoples, the strongheart halflings are a more organized, orderly, and industrious race.  Strongheart halflings often surprise those more familiar with their wandering lightfoot cousins with their confident and readily competitive nature.
+
+ 
+
+Strongheart halflings have the following traits:
+вЂ“ +2 bonus to Saving Throws vs. Paralysis/Poison/Death and vs. Rod/Staff/Wand, with additional bonuses based on Constitution.
+
+вЂ“ +1 bonus to Saving Throws vs. Spell, with additional bonuses based on Constitution.
+вЂ“ +1 racial bonus to attack rolls with slings.
+вЂ“ +10% Open Locks, +10% Find Traps, +10% Pick Pockets, +15% Move Silently, +20% Hide in Shadows.
+вЂ“ +1 Dexterity, -1 Strength, -1 Wisdom.
+
+ 
+
+AASIMAR: Aasimar carry the blood of a celestial, the begotten offspring from the union of a mortal and a deity. Aasimar are usually good-aligned and fight against evil in the world. They typically have fair skin, golden eyes, and often a birthmark in the shape of the deity's holy symbol. Aasimar are blessed with insight and personal magnetism and are typically paladins.
+
+ 
+
+Aasimars have the following traits:
+
+вЂ“ Acid, cold and electrical resistance: 10.
+
+вЂ“ Infravision.
+
+вЂ“ Spell-like abilities: Sunscorch once per day.
+
+вЂ“ +1 Wisdom, +1 Charisma.
+
+вЂ“ +10% Find Traps, +5% Detect Illusions.
+
+вЂ“ Aasimars are slightly more powerful than other races and gain 95% of overall experience.
+
+ 
+
+TIEFLINGS: The infernal counterpart to aasimar, tieflings are humans with a hint of the diabolical in their bloodline. Though their appearance is mostly human, they often have telltale signs that belie their ancestry. Tieflings usually have dusky skin and dark or reddish hair. Though many sport small horns, cat eyes, or other bizarre features, most tieflings try to hide their abnormalities from humans.
+
+ 
+
+Tieflings have the following traits:
+
+вЂ“ Fire, cold and electrical resistance: 10.
+
+вЂ“ Infravision.
+
+вЂ“ Spell-like abilities: Blindness once per day.
+
+вЂ“ +10% Move Silently, +10% Hide in Shadows.
+
+вЂ“ +1 Intelligence, +1 Dexterity.
+
+вЂ“ Tieflings are slightly more powerful than other races and gain 95% of overall experience.
+*/

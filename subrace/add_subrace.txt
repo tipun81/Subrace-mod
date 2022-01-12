@@ -1,0 +1,22 @@
+1.   subrace_lua
+1.1. Строки в начале файла
+1.2. Строки в районе if ( v.strRef == %Ztext_aasimar% ) or
+
+2.   M_zzSUBR.LUA
+2.1. function subt(chr)
+2.2. function createSubraceTable(race)
+2.3. function createSubraceTableEx()
+2.4. zZsubraceStrings = {
+
+3.   subrace.tph
+3.1. LAF APPEND_STATDESC_ENTRY 
+3.2. Добавить заклинания/эффекты
+
+4.   append_bald.baf
+4.1. добавить блок для новой подрасы
+
+
+
+@200 - нужно добавить описание для GeneralHelp
+Если добавлю в свой мод отображение описания расы, то при установке добавить туда же субрасу
+function SubRaceAndRaceOrGeneralHelp(sbr) - там есть куча нижних подчеркиваний, их надо подкрасить, если установлен мой мод. Цвет, как в отображении классов.

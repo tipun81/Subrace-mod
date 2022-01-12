@@ -61,6 +61,11 @@ THEN
 		SetGlobal("Player_Change_Subrace","GLOBAL",2)
 		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",0))
 		Continue()
+	RESPONSE #11
+		SetGlobal("Player_Change_Subrace","GLOBAL",2)
+		ActionOverride(Player1,SetGlobal("SUBRACE","LOCALS",11))
+		ActionOverride(Player1,ApplySpellRES("SR_EMOON",Myself))
+		Continue()
 END
 
 IF

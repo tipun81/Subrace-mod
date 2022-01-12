@@ -1,6 +1,6 @@
 
 OUTER_SET select_subrase  = RESOLVE_STR_REF (@51)
-OUTER_SET select_subraseA  = RESOLVE_STR_REF (@50)
+OUTER_SET select_subraseA = RESOLVE_STR_REF (@50)
 OUTER_SET select_sgenhlp  = RESOLVE_STR_REF (@200)
 //human
 OUTER_SET human_title     = RESOLVE_STR_REF (@31)
@@ -14,6 +14,8 @@ OUTER_SET drow_title      = RESOLVE_STR_REF (@23)
 OUTER_SET drow_desc       = RESOLVE_STR_REF (@130)
 OUTER_SET wild_elf_title  = RESOLVE_STR_REF (@24)
 OUTER_SET wild_elf_desc   = RESOLVE_STR_REF (@140)
+OUTER_SET moon_elf_title  = RESOLVE_STR_REF (@1100)
+OUTER_SET moon_elf_desc   = RESOLVE_STR_REF (@1101)
 //dwarf
 OUTER_SET dwarf_title     = RESOLVE_STR_REF (@33)
 OUTER_SET dwfgold_title   = RESOLVE_STR_REF (@28)
@@ -34,9 +36,6 @@ OUTER_SET svirfn_desc     = RESOLVE_STR_REF (@170)
 OUTER_SET halfelf_title   = RESOLVE_STR_REF (@36)
 OUTER_SET halforc_title   = RESOLVE_STR_REF (@37)
 
-
-
-
 //human
 OUTER_SET Zhuman_title     = RESOLVE_STR_REF (@531)
 OUTER_SET Zaasimar_title   = RESOLVE_STR_REF (@521)
@@ -45,6 +44,7 @@ OUTER_SET Ztiefling_title  = RESOLVE_STR_REF (@522)
 OUTER_SET Zelf_title       = RESOLVE_STR_REF (@532)
 OUTER_SET Zdrow_title      = RESOLVE_STR_REF (@523)
 OUTER_SET Zwild_elf_title  = RESOLVE_STR_REF (@524)
+OUTER_SET Zmoon_elf_title  = RESOLVE_STR_REF (@1102)
 //dwarf
 OUTER_SET Zdwarf_title     = RESOLVE_STR_REF (@533)
 OUTER_SET Zdwfgold_title   = RESOLVE_STR_REF (@528)
@@ -60,14 +60,27 @@ OUTER_SET Zsvirfn_title    = RESOLVE_STR_REF (@527)
 OUTER_SET Zhalfelf_title   = RESOLVE_STR_REF (@536)
 OUTER_SET Zhalforc_title   = RESOLVE_STR_REF (@537)
 
+//first letter upper
+OUTER_SET text_aasimar   = RESOLVE_STR_REF(@11)
+OUTER_SET text_tiefling  = RESOLVE_STR_REF(@12)
+OUTER_SET text_drow      = RESOLVE_STR_REF(@13)
+OUTER_SET text_wild_elf  = RESOLVE_STR_REF(@14)
+OUTER_SET text_dwfduerg  = RESOLVE_STR_REF(@19)
+OUTER_SET text_dwfgold   = RESOLVE_STR_REF(@18)
+OUTER_SET text_hflstrong = RESOLVE_STR_REF(@15)
+OUTER_SET text_hflhide   = RESOLVE_STR_REF(@16)
+OUTER_SET text_svirfn    = RESOLVE_STR_REF(@17)
+OUTER_SET text_moon_elf  = RESOLVE_STR_REF(@1103)
+
+
 ACTION_IF ( GAME_IS ~iwdee~ ) BEGIN
-	OUTER_SET bghuman = 37481
-	OUTER_SET bgelf = 37485
-	OUTER_SET bghalfelf = 37489
-	OUTER_SET bgdwarf = 37493
-	OUTER_SET bghalfling = 37497
-	OUTER_SET bggnome = 37501
-	OUTER_SET bghalforc = 37505
+	OUTER_SET bghuman    = 37481  OUTER_SET bghuman_r    = 37482
+	OUTER_SET bgelf      = 37485  OUTER_SET bgelf_r      = 37486
+	OUTER_SET bghalfelf  = 37489  OUTER_SET bghalfelf_r  = 37490 //
+	OUTER_SET bgdwarf    = 37493  OUTER_SET bgdwarf_r    = 37494
+	OUTER_SET bghalfling = 37497  OUTER_SET bghalfling_r = 37498
+	OUTER_SET bggnome    = 37501  OUTER_SET bggnome_r    = 37502
+	OUTER_SET bghalforc  = 37505  OUTER_SET bghalforc_r  = 37506
 	OUTER_SPRINT higlihtseq ~function zZgetRaceHighlightFrame(index)
 	local ret = 0
 
@@ -80,16 +93,16 @@ ACTION_IF ( GAME_IS ~iwdee~ ) BEGIN
 	return ret
 end~
 END ELSE BEGIN
-	OUTER_SET bghuman = 9550
-	OUTER_SET bgelf = 9552
-	OUTER_SET bghalfelf = 9555
-	OUTER_SET bgdwarf = 9551
-	OUTER_SET bghalfling = 9554
-	OUTER_SET bggnome = 9553
+	OUTER_SET bghuman    = 9550   OUTER_SET bghuman_r    = 1096
+	OUTER_SET bgelf      = 9552   OUTER_SET bgelf_r      = 1097
+	OUTER_SET bghalfelf  = 9555   OUTER_SET bghalfelf_r  = 1098
+	OUTER_SET bgdwarf    = 9551   OUTER_SET bgdwarf_r    = 1100
+	OUTER_SET bghalfling = 9554   OUTER_SET bghalfling_r = 1101
+	OUTER_SET bggnome    = 9553   OUTER_SET bggnome_r    = 1099
 	ACTION_IF ( GAME_IS ~bg2ee eet~ ) BEGIN
-		OUTER_SET bghalforc = 53191
+		OUTER_SET bghalforc = 53191  OUTER_SET bghalforc_r = 53212
 	END ELSE BEGIN
-		OUTER_SET bghalforc = 24204
+		OUTER_SET bghalforc = 24204  OUTER_SET bghalforc_r = 24202
 	END
 	OUTER_SPRINT higlihtseq ~~
 END
@@ -149,6 +162,7 @@ COPY ~subrace/M_zzSUBR.lua~ ~override~ EVALUATE_BUFFER
 OUTER_SPRINT ~tilde~ "~"
 
 COPY_EXISTING ~ui.menu~ ~override~
+	REPLACE_TEXTUALLY ~chargen\.information~ ~zzCreateCharInfo(chargen.information)~
 	SET ofs = INDEX_BUFFER(~menu[ %TAB%%WNL%]*{[ %TAB%%WNL%]*name[ %TAB%]+['"]CHARGEN_RACE['"]~)
 	PATCH_IF ( ofs >= 0 ) BEGIN
 		SET ofs2 = INDEX_BUFFER(~onOpen[ %TAB%%WNL%]+"~ ofs)
@@ -439,7 +453,8 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 			   ( v.strRef == %Ztext_hflstrong% ) or
 			   ( v.strRef == %Ztext_svirfn% ) or
 			   ( v.strRef == %Ztext_tiefling% ) or
-			   ( v.strRef == %Ztext_wild_elf% ) then~
+			   ( v.strRef == %Ztext_wild_elf% ) or
+			   ( v.strRef == %Ztext_moon_elf% ) then~
 	
 	PATCH_IF GAME_IS ~iwdee~ BEGIN
 		SET ofs = INDEX_BUFFER(~addCharacterDetail(v\.bam,v\.current,Infinity_FetchString(v\.strRef))~)
