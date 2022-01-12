@@ -1,3 +1,9 @@
+@1000000 = ~Subrace mod for Baldur's Gate Enhanced Edition (BG1, BG:SoD, BG2, EET)~
+@1000001 = ~Change subrace colors (Hair and Skin)~
+@1000002 = ~No change subrace colors (Hair and Skin)~
+@1000003 = ~This component is not compatible with your game~
+
+
 @1 = ~Select a subrace:~
 @2 = ~I want to keep the primary race.~
 @3 = ~It's my choice.~
@@ -66,8 +72,7 @@ This spell outlines one or more creatures with a pale violet glow, making positi
 @50   = ~Subrace select:~
 @51   = ~SUBRACE SELECT~
 
-@110  = ~AASIMAR
-Aasimar carry the blood of a celestial, the begotten offspring from the union of a mortal and a deity.  Aasimar are usually good-aligned and fight against evil in the world.  They typically have fair skin, golden eyes, and often a birthmark in the shape of the deity's holy symbol.  Aasimar are blessed with insight and personal magnetism and are typically paladins.
+@110  = ~Aasimar carry the blood of a celestial, the begotten offspring from the union of a mortal and a deity.  Aasimar are usually good-aligned and fight against evil in the world.  They typically have fair skin, golden eyes, and often a birthmark in the shape of the deity's holy symbol.  Aasimar are blessed with insight and personal magnetism and are typically paladins.
 
 Advantages:
  +1 Wisdom
@@ -80,8 +85,7 @@ Disadvantages:
  Gets only 95% of experience
  ~
 
-@120  = ~TIEFLING
-The infernal counterpart to aasimar, tieflings are humans with a hint of the diabolical in their bloodline. Though their appearance is mostly human, they often have telltale signs that belie their ancestry. Tieflings usually have dusky skin and dark or reddish hair. Though many sport small horns, cat eyes, or other bizarre features, most tieflings try to hide their abnormalities from humans.
+@120  = ~The infernal counterpart to aasimar, tieflings are humans with a hint of the diabolical in their bloodline. Though their appearance is mostly human, they often have telltale signs that belie their ancestry. Tieflings usually have dusky skin and dark or reddish hair. Though many sport small horns, cat eyes, or other bizarre features, most tieflings try to hide their abnormalities from humans.
 
 Advantages:
  +1 Intelligence
@@ -96,8 +100,7 @@ Disadvantages:
  Gets only 95% of experience
  ~
 
-@130  = ~DROW
-Dark elves, also known as drow, are the subterranean cousins of moon elves. Their black skin and pale hair are a curse for their allegiance with the spider goddess, Lolth. Drow societies are usually ruled by cruel priestesses of Lolth and their noble houses. Dark elves are known for their arrogance, cruelty, and penchant for civil war.
+@130  = ~Dark elves, also known as drow, are the subterranean cousins of moon elves. Their black skin and pale hair are a curse for their allegiance with the spider goddess, Lolth. Drow societies are usually ruled by cruel priestesses of Lolth and their noble houses. Dark elves are known for their arrogance, cruelty, and penchant for civil war.
 
 Advantages:
  +1 Intelligence
@@ -112,8 +115,7 @@ Disadvantages:
  Gets only 90% of experience
  ~
 
-@140  = ~WILD ELF
-The rare wild elves are rarely seen by others, because they live in the heart of thick forests and they have incredible skill at keeping hidden.  Also called green elves, their skin tends to be dark brown, and their hair ranges from black to light brown, lightening to silvery white with age.
+@140  = ~The rare wild elves are rarely seen by others, because they live in the heart of thick forests and they have incredible skill at keeping hidden.  Also called green elves, their skin tends to be dark brown, and their hair ranges from black to light brown, lightening to silvery white with age.
 
 Advantages:
  +1 Constitution
@@ -122,8 +124,7 @@ Disadvantages:
  -1 Intelligence
  ~
 
-@150  = ~STRONGHEART HALFLING
-While the lightfoot halflings value the experience of travel and the sight of new lands and peoples, the strongheart halflings are a more organized, orderly, and industrious race.  Strongheart halflings often surprise those more familiar with their wandering lightfoot cousins with their confident and readily competitive nature.
+@150  = ~While the lightfoot halflings value the experience of travel and the sight of new lands and peoples, the strongheart halflings are a more organized, orderly, and industrious race.  Strongheart halflings often surprise those more familiar with their wandering lightfoot cousins with their confident and readily competitive nature.
 
 Advantages:
  +1 Axe skill
@@ -132,8 +133,7 @@ Disadvantages:
  no
  ~
 
-@160  = ~GHOSTWISE HALFLING
-Ghostwise halflings are the feral, reclusive cousins of lightfoot and strongheart halflings. They are found most often in the southern forests of the Realms living in small communities. Ghostwise halflings are rarely seen in large cities, but occasionally set out to explore the world for reasons known only to them. Visitors to ghostwise settlements often report that the halflings have kinship so tight with their fellows that they can communicate without speaking.
+@160  = ~Ghostwise halflings are the feral, reclusive cousins of lightfoot and strongheart halflings. They are found most often in the southern forests of the Realms living in small communities. Ghostwise halflings are rarely seen in large cities, but occasionally set out to explore the world for reasons known only to them. Visitors to ghostwise settlements often report that the halflings have kinship so tight with their fellows that they can communicate without speaking.
 
 Advantages:
  +5 Search traps (for thieves)
@@ -143,8 +143,7 @@ Disadvantages:
  no
  ~
 
-@170  = ~DEEP GNOME
-Also known as svirfneblin, the deep gnomes of the Realms are a secretive, mysterious race. Found in the deepest caverns of the Underdark, the svirfneblin live in constant fear of slavery or destruction at the hands or dark elves, mind flayers, and duergar. Deep gnomes are legendary for their ability to handle stone and gems. They have brown or gray skin and gray or white hair.
+@170  = ~Also known as svirfneblin, the deep gnomes of the Realms are a secretive, mysterious race. Found in the deepest caverns of the Underdark, the svirfneblin live in constant fear of slavery or destruction at the hands or dark elves, mind flayers, and duergar. Deep gnomes are legendary for their ability to handle stone and gems. They have brown or gray skin and gray or white hair.
 
 Advantages:
  +1 Dexterity
@@ -165,8 +164,7 @@ Disadvantages:
  Gets only 85% of experience
  ~
 
-@180  = ~GOLD DWARF
-In a time when the dwarven race is in sad decline, the gold dwarves of the Realms received a divine gift from Moradin, the Soul Forger. The father of the dwarven gods granted the Thunder Blessing upon his people, resulting in a slow growth of the gold dwarf population. Though its effects may not be felt for decades, gold dwarves are already starting to re-establish themselves in the Realms as shrewd traders and proud, if somewhat haughty, warriors.
+@180  = ~In a time when the dwarven race is in sad decline, the gold dwarves of the Realms received a divine gift from Moradin, the Soul Forger. The father of the dwarven gods granted the Thunder Blessing upon his people, resulting in a slow growth of the gold dwarf population. Though its effects may not be felt for decades, gold dwarves are already starting to re-establish themselves in the Realms as shrewd traders and proud, if somewhat haughty, warriors.
 
 Advantages:
  +1 Charisma
@@ -177,8 +175,7 @@ Disadvantages:
  -1 Dexterity
  ~
 
-@190  = ~GRAY DWARF
-Also known as duergar, the gray dwarves of the Forgotten Realms live even deeper underground than their shield dwarf and gold dwarf cousins. The duergar share little in common with other dwarves and practice slavery in their monstrous subterranean cities. Often motivated by greed and a thirst for power, gray dwarves are known throughout the Realms as devious, efficient warriors. Duergar almost always have gray hair and skin.
+@190  = ~Also known as duergar, the gray dwarves of the Forgotten Realms live even deeper underground than their shield dwarf and gold dwarf cousins. The duergar share little in common with other dwarves and practice slavery in their monstrous subterranean cities. Often motivated by greed and a thirst for power, gray dwarves are known throughout the Realms as devious, efficient warriors. Duergar almost always have gray hair and skin.
 
 Advantages:
  +10 racial bonus on Search checks to notice unusual stonework, such as sliding walls, secret doors, stonework traps and new construction
@@ -216,9 +213,61 @@ Disadvantages:
 @537   = ~halforc~
 
 
+/*new subraces*/
+/*HUMAN*/
+@1000 = ~HALF-DRAGON~
+@1001 = ~HALF-DRAGON
+When a dragon in polymorphed form mates with another creature, the union sometimes produces half-dragon offspring. A creature might also transform into a half-dragon as a result of a mad wizard's spell or a ritual bath in dragon's blood. In all these cases, the result is a creature that combines the essence of a dragon with the form of its original race. Regardless of their origins, all half-dragons have similar features and appearance, gaining special senses, resistance to destructive energy, and a breath weapon.
 
+Advantages:
+ Infravision
+ Immunity to sleep, paralysis, blindness
+ Strength: +2
+ 
+ Resists 50% different damage. The type of resistance depends on the color:
+ - Fire: Brass, Gold, Red
+ - Cold: Silver, White
+ - Electricity: Blue, Bronze
+ - Acid: Black, Copper
+ - Poison: Green
+ 
+ Half Dragon Breath:
+ Breath attack 1 time per day / 5 level. Damage depends on color:
+ - Fire: Brass, Gold, Red
+ - Cold: Silver, White
+ - Electricity: Blue, Bronze
+ - Acid: Black, Copper
+ - Poison: Green
+ Damage starts at 1d6 and increases as you level up:
+ - Level 1: 1d6
+ - Level 4: 2d6
+ - Level 8: 3d6
+ - Level 12: 4d6
+ - Level 16: 5d6
+ A saving throw against breath reduces damage by half. 
 
+Disadvantages:
+ Cannot use helmets, shields, cloaks
+ Can't Find Familiar
+ Dexterity: -2
+ Charisma: -1
+ Gains only 85% of experience~
+@1002 = ~half-dragon~
+@1003 = ~Half-dragon~
 
+/* elf */
+@1100 = ~MOON ELF~
+@1101 = ~The moon elves have chosen forests for solitude, as have many of their brethren. They worship the moon and derive their magical power from it. On a full moon, moon elves become especially powerful. They are the most sociable among their fellows and easily make contact with other races. Often, out of curiosity and a thirst for adventure, they join the groups of adventurers. More than other elves, they are drawn to a variety of paths. Moon elves love music and make excellent bards.
+They have fair skin, sometimes with a bluish tinge, and silver-white, black, or blue hair. Their eyes are blue or green with gold spots.
+
+Advantages:
+ Move Silently and Hide In Shadows: +10
+ Charisma: +1
+
+Disadvantages:
+ Constitution: -1~
+@1102 = ~moon elf~
+@1103 = ~Moon Elf~ 
 
 
 
