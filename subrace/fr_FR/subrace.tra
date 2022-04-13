@@ -1,0 +1,391 @@
+@1000000 = ~Mod Subrace ( sous-race ) pour Baldur's Gate Enhanced Edition (BG1, BG:SoD, BG2, EET)~
+@1000001 = ~Change les couleurs de la sous-race (Cheveux et Peau)~
+@1000002 = ~Ne pas changer les couleurs de la sous-race (Cheveux et Peau)~
+@1000003 = ~Ce composant n'est pas compatible avec votre jeu~
+
+
+@1 = ~Sélectionner une sous-race :~
+@2 = ~Je veux garder la race d'origine.~
+@3 = ~C'est mon choix.~
+@4 = ~Sélectionnez une sous-race.~
+@5 = ~Êtes-vous sûr ?~
+@6 = ~Oui.~
+@7 = ~Il n'y a pas de sous-race pour la race choisie.~
+
+@10   = ~~
+@11   = ~Aasimar~
+@12   = ~Tieffelin~
+@13   = ~Elfe noir~
+@14   = ~Elfe sauvage~
+@15   = ~Costaud~
+@16   = ~Sagespectre~
+@17   = ~Svirfnebelin~
+@18   = ~Nain des collines~
+@19   = ~Duergar~
+
+@20   = ~sous-race : ~
+
+@21   = ~AASIMAR~
+@22   = ~TIEFFELIN~
+@23   = ~ELFE NOIR~
+@24   = ~ELFE SAUVAGE~
+@25   = ~COSTAUD~
+@26   = ~SAGESPECTRE~
+@27   = ~SVIRFNEBELIN~
+@28   = ~NAIN DES COLLINES~
+@29   = ~DUERGAR~
+
+@31   = ~HUMAIN~
+@32   = ~ELFE~
+@33   = ~NAIN~
+@34   = ~PETITES-PERSONNES~
+@35   = ~GNOME~
+@36   = ~DEMI-ELFES~
+@37   = ~DEMI-ORQUE~
+
+@40   = ~Rayon de soleil~
+@41   = ~Rayon de soleil 
+(Evocation)
+
+Niveau : 1
+Sphère : Soleil
+Portée : Champ visuel du jeteur de sorts
+Durée : Instantanée
+Temps d'incantation : 4
+Zone d'effet : 1 créature
+Jet de sauvegarde : 1/2
+Lorsque ce sort est lancé, un Rayon de soleil s'abat depuis le ciel. Un jet de sauvegarde contre les sorts permet à la cible de réduire les dégâts causés par les brûlures de moitié. La créature visée reçoit 1d6 points de dégâts + 1 point pour chaque niveau de lanceur de sorts. Les morts-vivants et les creatures sensibles au soleil touchés subissent 1d6 points de dégâts + 2 points pour chaque niveau de lanceur de sorts. La cible est également aveuglée pendant 3 rounds.~
+@42   = ~Lueur féérique~
+@43   = ~Lueur féérique 
+(Altération)
+
+Niveau : 1
+Sphere: Climat
+Portée : Champ visuel du jeteur de sorts
+Durée : 4 rounds / niveau
+Temps d'incantation : 4
+Zone d'effet : 3 mètres de rayon autour de la cible
+Jet de sauvegarde : aucun
+
+Ce sort entoure une ou plusieurs créatures d'une pâle lueur violette, rendant les positions et les déplacements facilement visibles. Les créatures entourées sont plus faciles à attaquer, ce qui leur donne un malus de classe d'armure de 2.~
+
+@50   = ~Sélection de la sous-race :~
+@51   = ~SÉLECTION DE LA SOUS-RACE~
+
+@110  = ~Les aasimars sont des êtres avec du sang céleste, issue de l'union d'un mortel et d'une divinité. Ils sont généralement d'alignement bon et combattent le mal de par le monde. Ils ont habituellement une peau claire, des yeux dorés et présentent souvent une marque de naissance ayant la forme du symbole sacré de leur ancêtre divin. Les Aasimar sont dotés d'un charisme et d'une perspicacité remarquable, ils suivent généralement la voie du paladin.
+
+Les aasimars bénéficient des traits suivants :
+ +1 en Sagesse
+ +1 en Charisme
+- Résistance à l'acide, au froid, et à l'électricité : +20
+- Rayon de soleil une fois par jour.
+- Infravision.
+ 
+Inconvénients :
+- Obtient seulement 95 % de l'expérience acquise.
+ ~
+ 
+@120  = ~Les équivalents infernaux des aasimar sont nommés tieffelins, des humains avec une légère part diabolique dans leur lignée. Bien que leur apparence soit généralement humaine, ils présentent souvent des signes révélateurs de leur ascendance. Les tieffelins ont généralement une peau sombre et des cheveux foncés ou roux. Bien que beaucoup arborent de petites cornes, des yeux de chat ou d'autres caractéristiques insolites, la plupart des tieffelins ont à cœur de cacher leurs différences aux humains.
+
+Avantages :
+ +1 en Intelligence
+ +1 en Dextérité
+- Résistance au feu, au froid, et à l'électricité : +20 
+- Bonus de 10 % en Déplacement silencieux et Se cacher dans l'ombre.
+- Cécité une fois par jour.
+- Infravision.
+
+Inconvénients :
+ -1 en Charisme
+- Obtient seulement 95 % de l'expérience acquise.
+ ~
+
+@130  = ~Les elfes noirs, également connus sous le nom de drow, sont les cousins des elfes d'Argent et vivent principalement en Ombre-Terre. Leur peau noire et leurs cheveux pâles sont les stigmates de leur allégeance à Lolth, la déesse araignée. Les sociétés elfes noirs sont généralement dirigées par de cruelles prêtresses de Lolth et leurs maisons. Ils sont connus pour leur arrogance, leur cruauté et leur penchant pour la sédition.
+
+Avantages :
+ +1 en Intelligence
+ +1 en Charisme
+ +2 en Détection des pièges
+- résistance à la magie : 50%
+- Bénéficie d'un bonus de 1 pour les jets de sauvegarde contre les sorts.
+- Lueur féérique trois fois par jour.
+
+Inconvénients :
+- Sensible à la lumière : -1 au TAC0 et aux jets de sauvegarde à la lumière du jour.
+- Obtient seulement 90 % de l'expérience acquise.
+ ~
+
+@140  = ~Vivant au cœur d'épaisses forêts, les elfes sauvages sont rarement aperçu et ont une incroyable aptitude à la dissimulation. Également appelés elfes vert, leur peau tend à être de couleur brune et foncé, et leurs cheveux vont du noir au châtain clair, blanchissant avec l'âge vers une couleur argenté.
+
+Avantages :
+ +1 en Constitution
+
+Inconvénients :
+ -1 en Intelligence
+ ~
+
+@150  = ~Alors que les petites-personnes communes apprécient l'expérience acquise en voyageant, ainsi que la découverte de nouvelles terres et de nouveaux peuples, les Costaud sont une race plus organisée, ordonnée et productive. Les Costaud surprennent souvent ceux qui sont habitués à leurs cousins itinérant, par leur nature confiante et compétitive.
+
+Avantages :
+- Spécial : 1 point de compétence supplémentaire dans le combat à la hache.
+
+Inconvénients :
+- aucun.
+ ~
+
+@160  = ~Contrairement à leurs cousins, les sagespectres sont plus farouches et réservés. On les trouve le plus souvent dans les forêts au sud des royaumes ou ils vivent en petites communautés. Même si on les voit rarement dans les grandes villes, les sagespectres partent parfois à l'aventure pour des raisons qu'ils sont les seuls à connaître. Les voyageurs qui se sont rendus dans leurs villages rapportent souvent que les sagespectres ont des liens de parenté si étroits avec leurs semblables qu'ils peuvent communiquer sans parler.
+
+Avantages :
+ +5 en Détection des pièges (pour les voleurs).
+- Pose de piège une fois par jour (pour les voleurs).
+
+Inconvénients :
+- aucun.
+ ~
+
+@170  = ~Également connus sous le nom de gnomes des profondeurs, les svirfneblins sont une race secrète et mystérieuse. Installés dans les profondeurs de l'Ombre-Terre, ils vivent dans la crainte constante d'être réduits en esclavage ou anéantis par les elfes noirs, les Flagelleurs mental et les duergars. Les svirfneblins sont légendaires pour leur aptitude à manipuler la pierre et les gemmes. Ils ont la peau brune ou grise et les cheveux gris ou blancs.
+
+Avantages :
+ +1 en Dextérité
+ +1 en Sagesse
+- résistance à la magie : 50%
+- Spécial : Bonus de 2 contre les armes à projectile.
+- Image Miroir une fois par jour.
+- Invisibilité une fois par jour.
+- Flou une fois par jour.
+- Bonus racial de 1 à tous les jets de sauvegarde contre la divination.
+- Bonus racial de 1 aux attaques contres les kobolds, gobelins, hobgobelins, and gobelours.
+- Bonus racial de 2 à la détection des pièges dans les zones souterraines non éclairé.
+- Bonus racial de 10 pour se cacher dans l'ombre, ce bonus passe à 20 dans les zones souterraines non éclairé.
+
+Inconvénients :
+ -1 en Force
+ -2 en Charisme (-1 si le Charisme est en dessous de 3)
+- Obtient seulement 85 % de l'expérience acquise.
+ ~
+
+@180  = ~À une époque où la race naine était tristement en déclin, Moradin, le Créateur offrit aux nains des collines, à travers les royaumes, une faveur divine. Le père de tout les nains leur a accordé la Bénédiction du Tonnerre, et provoqua ainsi un nouvel essor de la population des nains des collines. Bien que ses effets ne se fassent pas sentir avant des décennies, ils commencent déjà à se multiplier dans les Royaumes en tant que commerçants avisés ainsi qu'en fiers et quelque peu hautains, guerriers.
+
+Avantages :
+ +1 en Charisme
+- Spécial : Bonus de 2 à la CA contre les géants.
+- Bonus racial de 1 aux attaques contres les aberrations, les créatures étranges qui vivent en Ombre-Terre.
+
+Inconvénients :
+ -1 en Dextérité
+ ~
+
+@190  = ~Également connus sous le nom de nains gris, Les duergars des royaumes oubliés vivent encore plus profondément sous terre que leurs cousins les nains d'écu et les nains des collines. Ils ont peu de choses en commun avec les autres nains, pratiquant l'esclavage dans leurs gigantesques cités souterraines, leur réputation des guerriers perfides et efficaces est connue dans tous les royaumes. Souvent motivés par la cupidité et l'ivresse du pouvoir, les duergars ont presque toujours les cheveux et la peau gris.
+
+Avantages :
+- Bonus racial de 10 à la détection des ouvrages en pierre inhabituels, tels que les murs coulissants, les portes secrètes, les pièges et les constructions récentes.
+- Bonus racial de 1 aux jets de sauvegarde contre les sorts et effets de sorts.
+- Bonus racial de 20 aux déplacement silencieux.  Les duergars excellent dans les déplacements furtifs.
+- Spécial : Bonus de 2 à la CA contre les géants.
+- Invisibilité une fois par jour.
+- Infravision.
+
+Inconvénients :
+ -2 en Charisme (-1 si le Charisme est en dessous de 3)
+- Sensible à la lumière : -1 au TAC0 et aux jets de sauvegarde à la lumière du jour.
+- Obtient seulement 90 % de l'expérience acquise.~
+
+
+@200 = ~~
+
+
+@521   = ~aasimar~
+@522   = ~tieffelin~
+@523   = ~elfe noir~
+@524   = ~elfe sauvage~
+@525   = ~costaud~
+@526   = ~sagespectre~
+@527   = ~svirfnebelin~
+@528   = ~nain des collines~
+@529   = ~duergar~
+
+@531   = ~humain~
+@532   = ~elfe~
+@533   = ~nain~
+@534   = ~petites-personnes~
+@535   = ~gnome~
+@536   = ~demi-elfe~
+@537   = ~demi-orque~
+
+
+/*new subraces*/
+/*HUMAN*/
+@1000 = ~DEMI-DRAGON~
+@1001 = ~DEMI-DRAGON
+Lorsqu'un dragon se métamorphose et s'accouple avec une autre créature, il arrive que le fruit de cette union donne naissance à un demi-dragon. Une créature peut également se voir transformer en demi-dragon à la suite d'un sort lancé par un sorcier fou ou après un bain rituel dans du sang de dragon. Dans tous ces cas, l'entité qui en résulte combine l'essence d'un dragon avec sa forme initial. Indépendamment de leurs origines, tous les demi-dragons ont des caractéristiques et une apparence similaires, ils gagnent des sens supplémentaires, une résistance à l'énergie destructive et la capacité souffle du dragon.
+
+Avantages :
+- Infravision
+- Immunité à la paralysie, au sommeil et à la cécité.
+ +2 en Force
+ 
+ 50% de résistance à un type de dégat, dépendant de la couleur :
+ - Feu : Laiton, Or, Rouge
+ - Froid : Argent, Blanc
+ - Electricité : Bleu, Bronze
+ - Acide : Noir, Cuivre
+ - Poison : Vert
+ 
+ Souffle de Demi-Dragon :
+ - Souffle une fois par jour tout les 5 niveaux. 
+ Les dégâts dépendent de la couleur :
+ - Feu : Laiton, Or, Rouge
+ - Froid : Argent, Blanc
+ - Electricité : Bleu, Bronze
+ - Acide : Noir, Cuivre
+ - Poison : Vert
+ Les dégâts commencent à 1d6 et augmentent avec le niveau :
+ - Niveau 1 : 1d6
+ - Niveau 4 : 2d6
+ - Niveau 8 : 3d6
+ - Niveau 12 : 4d6
+ - Niveau 16 : 5d6
+ Un jet de sauvegarde contre le Souffle réduit les dégats de moitié. 
+
+Inconvénients :
+- Ne peut pas utiliser les casques, les boucliers et les capes.
+- Ne peut pas invoqué de familier.
+ -2 en Dextérité
+ -1 en Charisme
+- Obtient seulement 85 % de l'expérience acquise.~
+@1002 = ~demi-Dragon~
+@1003 = ~Demi-Dragon~
+
+/* elf */
+@1100 = ~ELFE DE LA LUNE~
+@1101 = ~Les elfes de la lune ou elfes d'argent, comme beaucoup de leurs congénères ont choisi les forêts pour leur tranquillité. Ils vénèrent la lune et en tirent leur pouvoir magique, lorsque celle-ci est pleine, les elfes de la lune deviennent particulièrement puissants. Ils sont les plus sociables parmi leur semblables et entrent facilement en contact avec d'autres races. Souvent, par curiosité ou par soif d'aventure, ils rejoignent des groupes d'aventuriers. A la différence des autres elfes, ils sont attirés par toute sorte de choses. Les elfes de la lune aiment la musique et font d'excellents bardes.
+Ils ont la peau claire, parfois légèrement bleu, et les cheveux argentés, sombres ou bleus. Leurs yeux sont bleus ou verts avec des reflets dorés.
+
+Avantages :
+- Bonus de 10 % en Déplacement silencieux et Se cacher dans l'ombre.
+ +1 en Charisme
+
+Inconvénients :
+ -1 en Constitution~
+@1102 = ~elfe de la lune~
+@1103 = ~Elfe de la lune~
+
+
+
+/* =============== *
+ *  WeiDU prompts  *
+ * =============== */
+@-1000= "Le mod %TP2_FILE_NAME% contient"
+@-1001= "composants optionnels distincts.
+Pour gagner du temps, vous pouvez choisir ce que vous souhaitez faire d'eux
+au niveau general plutot que de repondre aux questions pour chacun.
+"
+@-1002= "Que faut-il faire de tous les composants qui NE sont PAS ENCORE installes ?
+Les [I]nstaller, les [S]auter, dem[A]nder pour chacun ? "
+@-1003= "Que faut-il faire de tous les composants qui sont DEJA installes ?
+Les [R]einstaller, les s[U]pprimer, les [S]auter, dem[A]nder pour chacun ? "
+
+@-1004= "S'IL VOUS PLAIT, envoyez par e-mail le fichier"
+@-1005= "a"
+
+@-1006= "Installer le composant ["
+@-1007= "] ?
+[R]einstaller, co[N]server, s[U]pprimer ou [Q]uitter ? "
+@-1008= "] ?
+[I]nstaller, [N]e pas installer ou [Q]uitter ? "
+
+@-1009= "Entrez une partie du nom du module : "
+
+@-1010= "Reinstallation du composant ["
+@-1011= "] "
+@-1012= "Reinstallation dans la langue"
+
+@-1013= "Suppression de l'ancienne installation de ["
+@-1014= "] au prealable..."
+@-1015= "SUPPRESSION REUSSIE DE L'ANCIEN"
+
+@-1016= "Installation en cours"
+@-1017= "ERREUR pendant l'installation de ["
+@-1018= "], retour a l'etat anterieur"
+@-1019= "INSTALLATION REUSSIE"
+@-1020= "Saute"
+@-1021= "Suppression de ["
+@-1022= "] (composant #"
+@-1023= ")"
+@-1024= "SUPPRESSION REUSSIE DE ["
+
+@-1025= "] ?
+[R]einstaller, co[N]server, s[U]pprimer, [Q]uitter ou choisir un parmi :"
+@-1026= "] ?
+[N]e pas installer, [Q]uitter ou choisir un parmi :"
+@-1027= " (installe actuellement)"
+
+@-1028= "Souhaitez-vous afficher les composants de ["
+@-1029= "] ?
+[Y]Oui, [N]on ? "
+
+@-1030= "] ?
+choisir un parmi :"
+@-1031= "] ?
+[R]einstaller, co[N]server, [Q]uitter ou choisir un parmi :"
+@-1032= "INSTALLATION ECHOUEE A CAUSE D'ERREURS"
+@-1033= "INSTALLATION AVEC DES ALERTES"
+@-1034= "Souhaitez-vous afficher les instructions (ReadMe) ? [Y]Oui [N]on"
+@-1035= "Dans la langue"
+
+@-1036= "Saute le GROUPE ["
+@-1037= "] pour cause d'absence des pre-requis."
+
+@-1038= "dem[A]nder pour chaque composant, tout [S]auter, ou choisir une selection pre-definie :"
+@-1039= "dem[A]nder pour chaque composant, [R]einstaller la configuration courante, tout s[U]pprimer, tout [S]auter, ou choisir une selection pre-definie :"
+
+@-1040= "
+Veuillez choisir la langue dans laquelle vous souhaitez jouer au jeu.
+Si par la suite vous desirez jouer au jeu dans une langue differente, il vous
+faudra editer le fichier weidu.conf et reinstaller vos mods.
+"
+@-1041= "Tcheque"
+@-1042= "Allemand"
+@-1043= "Anglais"
+@-1044= "Espagnol"
+@-1045= "Francais"
+@-1046= "Italien"
+@-1047= "Polonais"
+@-1048= "Portugais"
+@-1049= "Turc"
+@-1050= "Japonais"
+@-1051= "Coreen"
+@-1052= "Chinois simplifie"
+@-1053= "Russe"
+@-1054= "Ukrainien"
+
+@-1060= "
+Ce jeu est disponible en plusieurs langues mais WeiDU ne sait pas laquelle a ete choisie quand ce mod a ete installe.
+
+Veuillez indiquer quelle langue du jeu a ete utilisee quand vous avez installe ce mod. Votre choix servira jusqu'a ce que WeiDU s'arrete mais ne sera pas memorise.
+"
+@-1061= "
+Utilisation de"
+@-1062= " et "
+
+@-1063= "INSTALLATION ABANDONNEE"
+@-1064= "Abandon de l'installation de ["
+@-1065= "], retour a l'etat anterieur"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
