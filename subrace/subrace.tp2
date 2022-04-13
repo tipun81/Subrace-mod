@@ -1,13 +1,15 @@
 BACKUP ~subrace/backup~
 AUTHOR ~tipun. tipun.iwd@google.com~
-VERSION ~0.2.2~ 
+VERSION ~0.3.0~ 
 
 README ~subrace/readme.txt~
 
 ALWAYS
-  OUTER_SET INSTALLED_LEUI = (MOD_IS_INSTALLED ~leui.tp2~ 0) OR (MOD_IS_INSTALLED ~leui-iwdee.tp2~ 0) OR
-                             (MOD_IS_INSTALLED ~leui-sod.tp2~ 0) OR (MOD_IS_INSTALLED ~leui-bg1ee.tp2~ 0)
-  OUTER_SET INSTALLED_DSUI = (FILE_EXISTS_IN_GAME ~RGCGWDE.png~)
+  OUTER_SET INSTALLED_LEUI   = (MOD_IS_INSTALLED ~leui.tp2~ 0) OR (MOD_IS_INSTALLED ~leui-iwdee.tp2~ 0) OR
+                               (MOD_IS_INSTALLED ~leui-sod.tp2~ 0) OR (MOD_IS_INSTALLED ~leui-bg1ee.tp2~ 0)
+  OUTER_SET INSTALLED_LEUIBG = INSTALLED_LEUI AND GAME_IS ~bgee bg2ee eet~
+  OUTER_SET INSTALLED_DSUI   = (FILE_EXISTS_IN_GAME ~RGCGWDE.png~)
+  OUTER_SET INSTALLED_TIPUN  = (FILE_EXISTS_IN_GAME ~m_zZFunc.lua~)
 END
 
 LANGUAGE ~Russian~
@@ -16,6 +18,9 @@ LANGUAGE ~Russian~
 LANGUAGE ~English~
 	     ~en_US~
 	     ~subrace/en_US/subrace.tra~
+LANGUAGE ~Francais (traduction: JohnBob)~
+	     ~fr_FR~
+	     ~subrace/fr_FR/subrace.tra~
 
 BEGIN @1000001
 DESIGNATED 100
