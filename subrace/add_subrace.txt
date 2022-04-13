@@ -7,6 +7,7 @@
 2.2. function createSubraceTable(race)
 2.3. function createSubraceTableEx()
 2.4. zZsubraceStrings = {
+2.5. zZsubrTitleTable = {
 
 3.   subrace.tph
 3.1. LAF APPEND_STATDESC_ENTRY 
@@ -14,6 +15,9 @@
 
 4.   append_bald.baf
 4.1. добавить блок дл€ новой подрасы
+
+5.   subrace.ids
+5.1. ƒобавить запис€
 
 
 

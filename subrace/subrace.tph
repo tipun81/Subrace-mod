@@ -1,8 +1,8 @@
 
 INCLUDE ~subrace/functions.tph~
 
+INCLUDE ~subrace/lua_functions.tph~
 INCLUDE ~subrace/subrace_lua.tph~
-
 
 LAF ADD_SPLPROT_ENTRY INT_VAR value_hex=1 STR_VAR label="OUTDOOR"    definition="0x106  0x1  8" RET outdoor   =index END
 LAF ADD_SPLPROT_ENTRY INT_VAR value_hex=1 STR_VAR label="NOTOUTDOOR" definition="0x106  0x1  9" RET notoutdoor=index END
@@ -88,6 +88,7 @@ LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_tiefling  STR_VAR bam_file="SRSUBI
 LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_wild_elf  STR_VAR bam_file="SRSUBICO" RET text_wild_elf=index  Ztext_wild_elf=strref  END
 LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_moon_elf  STR_VAR bam_file="SRSUBICO" RET text_moon_elf=index  Ztext_moon_elf=strref  END
 
+COPY ~subrace/M_zzSUBR.lua~ ~override~ EVALUATE_BUFFER
 //BLOCK SUBRACE SPELLS
 COPY ~subrace/spell.spl~ ~override/SR_AASIM.spl~
   //Portrait icon
@@ -558,6 +559,7 @@ END
 //COPY_EXISTING ~ui.menu~ ~override~
 //	LPM APPLY_SPELL_SUBRACE_TO_CRE
 //	BUT_ONLY_IF_IT_CHANGES
+
 
 COPY_EXISTING ~ui.menu~ ~override~
 	LPM SHOW_IN_CHARACTER_RECORD

@@ -1,5 +1,5 @@
 Subrace MOD for Enhanced Edition Games(BGEE, BG2EE, EET, IWDEE)
-				   Version 0.2.2
+				   Version 0.2
 			   http://www.arcanecoast.ru
 
 
@@ -200,8 +200,8 @@ Version 0.1
 ---------------------
 
 ================================================================================
-BALDUR'S GATE II: SHADOWS OF AMN Developed and Â© 2000 BioWare Corp. All Rights
-Reserved. BALDUR'S GATE II: THRONE OF BHAAL Developed and Â© 2001 BioWare
+BALDUR'S GATE II: SHADOWS OF AMN Developed and © 2000 BioWare Corp. All Rights
+Reserved. BALDUR'S GATE II: THRONE OF BHAAL Developed and © 2001 BioWare
 Corp. All Rights Reserved. Baldur's Gate, Shadows of Amn, Tales of the Sword
 Coast, Forgotten Realms, the Forgotten Realms logo, Advanced Dungeons & Dragons,
 the AD&D logo, TSR and the TSR logo, and the Wizards of the Coast logo, are

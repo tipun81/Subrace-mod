@@ -1,0 +1,482 @@
+ACTION_CLEAR_ARRAY FC_COMMENTS_LIST
+OUTER_SET FC_COMMENTS_COUNT = 0
+
+DEFINE_PATCH_FUNCTION FC_COMMENT_IDX
+	INT_VAR number = 0
+	RET stridx
+BEGIN
+	SPRINT stridx ~~
+	PATCH_IF ( number < 10 ) BEGIN SPRINT ~stridx~ ~000%number%~ END ELSE
+	PATCH_IF ( number < 100 ) BEGIN SPRINT ~stridx~ ~00%number%~ END ELSE
+	PATCH_IF ( number < 1000 ) BEGIN SPRINT ~stridx~ ~0%number%~ END ELSE
+	BEGIN SPRINT ~stridx~ ~%number%~ END
+END
+
+DEFINE_PATCH_FUNCTION GET_BIT
+INT_VAR
+	number = 0
+	nth_bit = 0
+RET
+	bit_value
+BEGIN
+	SET bit_value = (number >> nth_bit) & 1
+END
+
+DEFINE_PATCH_MACRO FC_UPDATE_MENU_ELEMENT BEGIN
+	INNER_PATCH_SAVE ~menu_menu~ ~%menu_menu%~ BEGIN
+		DELETE_BYTES  offset_start offset_end - offset_start
+		SET len = STRING_LENGTH ~%element_text%~
+		INSERT_BYTES offset_start len
+		WRITE_ASCIIE offset_start ~%element_text%~
+	END
+END
+
+DEFINE_PATCH_MACRO FC_INSERT_MENU_ELEMENT BEGIN
+	INNER_PATCH_SAVE ~menu_menu~ ~%menu_menu%~ BEGIN
+		SPRINT ~element_text~ ~%LNL%%TAB%%element_text%~
+		SET len = STRING_LENGTH ~%element_text%~
+		INSERT_BYTES offset_end len
+		WRITE_ASCIIE offset_end ~%element_text%~
+	END
+END
+
+DEFINE_PATCH_MACRO FC_FIND_UI_BRACES BEGIN /**/
+	SET offsA = INDEX_BUFFER(~{~ offs) + 1
+	SET nums = 2
+	WHILE ( nums > 1 ) BEGIN
+		SET offsst = INDEX_BUFFER(~{~ offsA)
+		SET offsen = INDEX_BUFFER(~}~ offsA)
+		SET offsmn = INDEX_BUFFER(~menu[ %TAB%%WNL%%LNL%%MNL%]*{~ offsA)
+		PATCH_IF ( offsst >= 0 ) AND ( offsst < offsen ) BEGIN
+			SET nums = nums + 1
+			SET offsA = offsst + 1
+		END ELSE BEGIN
+			SET nums = nums - 1
+			SET offsA = offsen + 1
+		END
+		PATCH_IF ( offsmn <= offsA AND offsmn >= 0 ) BEGIN SET nums = 0 END
+	END
+END
+
+DEFINE_PATCH_FUNCTION FC_FIND_UI_MENU
+	STR_VAR
+		menu_name = ""
+	RET
+		menu_text
+		menu_text_edit //removed comments
+		success
+		offset_start
+		offset_end
+BEGIN
+	//read menu
+	SPRINT menu_text ""
+	SPRINT menu_text_edit ""
+	SET success = 0
+	SET offset_start = ( 0 - 1 )
+	SET offset_end = ( 0 - 1 )
+	PATCH_IF ( ~%menu_name%~ STR_CMP ~~ ) BEGIN
+		SET offs = INDEX_BUFFER(~menu[ %TAB%%WNL%%LNL%%MNL%]*{[ %TAB%%WNL%%LNL%%MNL%]*name[ %TAB%]+['"]%menu_name%['"]~)
+		PATCH_IF ( offs >= 0 ) BEGIN
+			SET offset_start = offs
+			LPM FC_FIND_UI_BRACES
+			PATCH_IF ( nums = 1 ) BEGIN
+				SET offset_end = offsA
+				READ_ASCII offset_start menu_text ( offset_end - offset_start )
+				SET success = 1
+			END
+		END
+	END
+	//comments
+	PATCH_IF success BEGIN
+		INNER_PATCH_SAVE ~menu_text_edit~ ~%menu_text%~ BEGIN
+			REPLACE_EVALUATE ~\(--.*$\)~
+			BEGIN
+				LPF FC_COMMENT_IDX INT_VAR number=FC_COMMENTS_COUNT RET stridx END
+				SPRINT tempstr EVAL ~comment_%stridx%~
+				DEFINE_ASSOCIATIVE_ARRAY FC_COMMENTS_LIST BEGIN ~%tempstr%~ => ~%MATCH1%~ END
+				SET FC_COMMENTS_COUNT += 1
+			END
+			~--%tempstr%~
+		END
+	END
+END
+
+DEFINE_PATCH_FUNCTION FC_RESTORE_MENU_COMMENTS
+	STR_VAR
+		menu_text = ""
+	RET
+		menu_text
+BEGIN
+	PATCH_IF ( FC_COMMENTS_COUNT > 0 ) BEGIN
+		INNER_PATCH_SAVE ~menu_text~ ~%menu_text%~ BEGIN
+			PATCH_PHP_EACH FC_COMMENTS_LIST AS restore => saved BEGIN
+				REPLACE_TEXTUALLY ~--%restore%~ ~%saved%~
+			END
+		END
+	END
+END
+
+DEFINE_PATCH_FUNCTION FC_FIND_UI_MENU_ELEMENT
+	INT_VAR
+		offsetstart = 0
+	STR_VAR
+		menu_text = ""
+		element_name = ""
+	RET
+		element_text
+		success
+		offset_start
+		offset_end
+BEGIN
+	SPRINT element_text ""
+	SET success = 0
+	SET offset_start = ( 0 - 1 )
+	SET offset_end = ( 0 - 1 )
+	PATCH_IF ( ~%menu_text%~ STR_CMP ~~ ) AND ( ~%element_name%~ STR_CMP ~~ ) BEGIN
+		INNER_PATCH ~%menu_text%~ BEGIN
+			SET offs = INDEX_BUFFER(~%element_name%[ %TAB%%WNL%%LNL%%MNL%]*{~ offsetstart)
+			PATCH_IF ( offs >= 0 ) BEGIN
+				SET offset_start = offs
+				LPM FC_FIND_UI_BRACES
+				PATCH_IF ( nums = 1 ) BEGIN
+					SET offset_end = offsA
+					READ_ASCII offset_start element_text ( offset_end - offset_start )
+					SET success = 1
+				END
+			END
+		END
+	END
+END
+
+DEFINE_PATCH_FUNCTION FC_FIND_UI_MENU_ELEMENT_EX
+	STR_VAR
+		menu_text = ""
+		element_name = ""
+		search_str = ""
+	RET
+		element_text
+		success
+		offset_start
+		offset_end
+BEGIN
+	SET done = 0
+	SET start = 0
+	SPRINT done_text ""
+	WHILE ( done = 0 ) BEGIN
+		LPF FC_FIND_UI_MENU_ELEMENT
+			INT_VAR
+				offsetstart = start
+			STR_VAR
+				menu_text = EVAL "%menu_text%"
+				element_name = EVAL "%element_name%"
+			RET
+				element_text
+				success
+				offset_start
+				offset_end
+		END
+		PATCH_IF success BEGIN
+		SPRINT done_text EVAL ~%element_text%~
+			PATCH_IF ( ~%search_str%~ STR_CMP ~~ ) BEGIN
+				INNER_PATCH ~%element_text%~ BEGIN
+					SET offs = INDEX_BUFFER(~%search_str%~)
+					PATCH_IF ( offs >= 0 ) BEGIN
+						SET done = 1
+					END ELSE BEGIN
+						SET success = 0
+						SPRINT done_text ""
+					END
+				END
+			END ELSE BEGIN
+				SET done = 1
+			END
+		END ELSE BEGIN
+			SET done = 1
+		END
+		SET start = offset_end
+	END
+	SPRINT element_text EVAL ~%done_text%~
+END
+
+DEFINE_PATCH_FUNCTION FC_CREATE_MENU_OPEN_CLOSE
+	INT_VAR
+		type = 0 //0 - onOpen, 1 - onClose
+	STR_VAR
+		menu_text = ""
+		edit_string = ""
+	RET
+		success
+		return_text
+BEGIN
+	SET success = 0
+	SPRINT return_text ""
+	PATCH_IF NOT type BEGIN SPRINT openclose "onOpen" SPRINT opcl "onClose" END ELSE BEGIN SPRINT openclose "onClose" END
+	INNER_PATCH ~%menu_text%~ BEGIN
+		PATCH_IF ( ~%openclose%~ STR_EQ ~onOpen~ ) BEGIN
+			SET offs = INDEX_BUFFER(~%opcl%[ %TAB%%WNL%%LNL%%MNL%]*"~)
+			PATCH_IF ( offs >= 0 ) BEGIN
+				SET offs1 = RINDEX_BUFFER(~[%WNL%%LNL%%MNL%]~ offs)
+				SPRINT ~edit_string~ ~%TAB%%openclose%%LNL%%TAB%"%LNL%%TAB%%TAB%%edit_string%%LNL%%TAB%"%LNL%~
+				SET success = 1
+			END
+		END
+		PATCH_IF NOT success BEGIN
+			SET offs = INDEX_BUFFER(~{~) + 1
+			SET offs1 = INDEX_BUFFER(~{~ offs)
+			SET offs2 = INDEX_BUFFER(~}~ offs) - 1
+			PATCH_IF ( offs1 < 0 ) BEGIN
+				SET offs1 = offs2
+			END ELSE BEGIN
+				SET offs1 = RINDEX_BUFFER(~[%WNL%%LNL%%MNL%][ %TAB%]*[a-zA-Z]+[%WNL%%LNL%%MNL%]*~ offs1)
+			END
+			SPRINT ~edit_string~ ~%TAB%%openclose%%LNL%%TAB%"%LNL%%TAB%%TAB%%edit_string%%LNL%%TAB%"%LNL%~
+			SET success = 1
+		END
+	END
+	PATCH_IF success BEGIN
+		INNER_PATCH_SAVE ~return_text~ ~%menu_text%~ BEGIN
+			SET len = STRING_LENGTH ~%edit_string%~
+			INSERT_BYTES offs1 len
+			WRITE_ASCIIE offs1 ~%edit_string%~
+		END
+	END
+END
+
+DEFINE_PATCH_FUNCTION FC_PATCH_MENU_OPEN_CLOSE
+	INT_VAR
+		type = 0 //0 - onOpen, 1 - onClose
+		insert = 0 //0 - top, 1 - bottom
+		delete_mode = 0 //1- remove lines
+	STR_VAR
+		menu_text = ""
+		edit_string = ""
+	RET
+		success
+		return_text
+BEGIN
+	SET success = 0
+	SET exists = 0
+	SPRINT return_text ""
+	PATCH_IF NOT type BEGIN SPRINT openclose "onOpen" END ELSE BEGIN SPRINT openclose "onClose" END
+	INNER_PATCH ~%menu_text%~ BEGIN
+		SET offs = INDEX_BUFFER(~%openclose%[ %TAB%%WNL%%LNL%%MNL%]*"~)
+		PATCH_IF ( offs >= 0 ) BEGIN
+			SET exists = 1
+			SET offs1 = INDEX_BUFFER(~"~ offs) + 1
+			SET offs2 = INDEX_BUFFER(~"~ offs1)
+			READ_ASCII offs1 openclose_text ( offs2 - offs1 )
+			SET len = STRING_LENGTH ~%openclose_text%~
+			INNER_PATCH_SAVE ~openclose_text~ ~%openclose_text%~ BEGIN
+				PATCH_IF ( ~%edit_string%~ STR_CMP ~~ ) BEGIN
+					PATCH_IF delete_mode BEGIN
+						REPLACE_TEXTUALLY ~%edit_string%~ ~~
+						SET success = 1
+					END ELSE BEGIN
+						PATCH_IF insert BEGIN
+							READ_ASCII ( len - 1 ) let (1)
+							PATCH_IF ( ~%let%~ STR_EQ ~%TAB%~ ) BEGIN
+								SPRINT let ~%TAB%~ SPRINT letz ~%LNL%%TAB%~
+							END ELSE BEGIN SPRINT let ~%LNL%%TAB%%TAB%~ SPRINT letz ~~ END
+							SPRINT ~edit_string~ ~%let%%edit_string%%letz%~
+							SET lennew = STRING_LENGTH ~%edit_string%~
+							INSERT_BYTES len lennew
+							WRITE_ASCIIE len ~%edit_string%~
+							SET success = 1
+						END ELSE BEGIN
+							READ_ASCII 0 let (1)
+							PATCH_IF ( NOT ~%let%~ STRING_CONTAINS_REGEXP ~[%WNL%%LNL%%MNL%]~ ) BEGIN SPRINT let ~~ END ELSE BEGIN  SPRINT let ~%LNL%%TAB%%TAB%~ END
+							SPRINT ~edit_string~ ~%LNL%%TAB%%TAB%%edit_string%%let%~
+							SET lennew = STRING_LENGTH ~%edit_string%~
+							INSERT_BYTES 0 lennew
+							WRITE_ASCIIE 0 ~%edit_string%~
+							SET success = 1
+						END
+					END
+				END
+			END
+		END
+	END
+	PATCH_IF success BEGIN
+		INNER_PATCH_SAVE ~return_text~ ~%menu_text%~ BEGIN
+			DELETE_BYTES offs1 offs2 - offs1
+			SET len = STRING_LENGTH ~%openclose_text%~
+			INSERT_BYTES offs1 len
+			WRITE_ASCIIE offs1 ~%openclose_text%~
+		END
+	END
+	PATCH_IF ( exists = 0 ) AND ( NOT delete_mode ) BEGIN
+		LPF FC_CREATE_MENU_OPEN_CLOSE
+			INT_VAR type insert
+			STR_VAR
+				menu_text = EVAL "%menu_text%"
+				edit_string = EVAL "%edit_string%"
+			RET success return_text
+		END
+	END
+END
+
+/*DEFINE_PATCH_FUNCTION FC_REPLACE_ELEMENT_ACTION
+	STR_VAR
+		element_text = ""
+		action_type = "action"
+		action_string = ""
+	RET
+		element_text
+BEGIN
+	PATCH_IF ( ~%action_string%~ STR_CMP ~~ ) BEGIN
+		SPRINT ~action_text~  ~%action_type%%LNL%%TAB%%TAB%"%LNL%%TAB%%TAB%%TAB%%action_string%%LNL%%TAB%%TAB%"~
+		SET lennew = STRING_LENGTH ~%element_text%~
+		INNER_PATCH_SAVE ~element_text~ ~%element_text%~ BEGIN
+			SET offs = INDEX_BUFFER(~%action_type%[ %TAB%%WNL%%LNL%%MNL%]*"~)
+			PATCH_IF ( offs >= 0 ) BEGIN
+				SET offs1 = INDEX_BUFFER(~"~ offs) + 1
+				SET offs2 = INDEX_BUFFER(~"~ offs1) + 1
+				DELETE_BYTES offs offs2 - offs
+			END ELSE BEGIN
+				SET offs = lennew - 2
+			END
+			SET len = STRING_LENGTH ~%action_text%~
+			INSERT_BYTES offs len
+			WRITE_ASCIIE offs  ~%action_text%~
+		END
+	END
+END*/
+
+DEFINE_PATCH_FUNCTION FC_REPLACE_ELEMENT_ACTION
+	INT_VAR
+		replace = 1 //0 - edit action, 1 - replace action
+		position = 0 //0 - top of action_check, 1 - bottom
+	STR_VAR
+		element_text = ""
+		action_type = "action"
+		action_string = ""
+		action_check = ""
+	RET
+		element_text
+BEGIN
+	PATCH_IF ( ~%action_string%~ STR_CMP ~~ ) BEGIN
+		PATCH_IF replace BEGIN
+			SPRINT ~action_text~ ~%action_type%%LNL%%TAB%%TAB%"%LNL%%TAB%%TAB%%TAB%%action_string%%LNL%%TAB%%TAB%"~
+		END ELSE BEGIN
+			INNER_PATCH ~%element_text%~ BEGIN
+				SET offs = INDEX_BUFFER(~%action_type%[ %TAB%%WNL%%LNL%%MNL%]*"~)
+				PATCH_IF ( offs >= 0 ) BEGIN
+					SET offs1 = INDEX_BUFFER(~"~ offs) + 1
+					SET offs2 = INDEX_BUFFER(~"~ offs1)
+					READ_ASCII offs1 action_text ( offs2 - offs1 )
+					INNER_PATCH_SAVE ~action_text~ ~%action_text%~ BEGIN
+						SET offs1 = INDEX_BUFFER(~%action_check%~)
+						PATCH_IF ( offs1 >= 0 ) BEGIN
+							REPLACE_EVALUATE ~^\([ %TAB%]*\)\(.*\)\(%action_check%\)\(.*\)$~
+							BEGIN
+								PATCH_IF position BEGIN
+									SPRINT fline ~~
+									SPRINT lline ~%LNL%%MATCH1%%action_string%~
+								END ELSE BEGIN
+									PATCH_IF ( ~%MATCH1%~ STR_EQ ~~ ) BEGIN
+										SPRINT nl ~%LNL%%TAB%%TAB%%TAB%~
+										SPRINT ~MATCH1~ ~%TAB%%TAB%%TAB%~
+									END ELSE BEGIN
+										SPRINT nl ~%MATCH1%~
+									END
+									SPRINT fline ~%nl%%action_string%%LNL%~
+									SPRINT lline ~~
+								END
+							END
+							~%fline%%MATCH1%%MATCH2%%MATCH3%%MATCH4%%lline%~
+						END
+					END
+					SPRINT ~action_text~ ~%action_type%%LNL%%TAB%%TAB%"%action_text%"~
+				END ELSE BEGIN
+					SPRINT ~action_text~ ~%action_type%%LNL%%TAB%%TAB%"%LNL%%TAB%%TAB%%TAB%%action_string%%LNL%%TAB%%TAB%"~
+				END
+			END
+		END
+		SET lennew = STRING_LENGTH ~%element_text%~
+		INNER_PATCH_SAVE ~element_text~ ~%element_text%~ BEGIN
+			SET offs = INDEX_BUFFER(~%action_type%[ %TAB%%WNL%%LNL%%MNL%]*"~)
+			PATCH_IF ( offs >= 0 ) BEGIN
+				SET offs1 = INDEX_BUFFER(~"~ offs) + 1
+				SET offs2 = INDEX_BUFFER(~"~ offs1) + 1
+				DELETE_BYTES offs offs2 - offs
+			END ELSE BEGIN
+				SET offs = lennew - 2
+			END
+			SET len = STRING_LENGTH ~%action_text%~
+			INSERT_BYTES offs len
+			WRITE_ASCIIE offs  ~%action_text%~
+		END
+	END
+END
+
+DEFINE_PATCH_FUNCTION FC_GETSET_ELEMENT_AREA
+	INT_VAR
+		set_area = 0 //0 get, 1 - set
+		coord_x = 0
+		coord_y = 0
+		width = 0
+		height = 0
+	STR_VAR
+		element_text = ""
+	RET
+		coord_x coord_y width height element_text
+BEGIN
+	SPRINT nl ~~
+	SET startoffs = 0
+	SET delete = 0
+	INNER_PATCH ~%element_text%~ BEGIN
+		READ_ASCII 0 tp (4)
+		PATCH_IF ( ~%tp%~ STR_EQ ~list~ ) BEGIN
+			SET len = BUFFER_LENGTH - 2
+			SET offs = RINDEX_BUFFER(~}~ len)
+			PATCH_IF ( offs >= 0 ) BEGIN SET startoffs = offs END
+		END
+		SET offs = INDEX_BUFFER(~area[ %TAB%]+[0-9]+[ %TAB%]+[0-9]+[ %TAB%]+[0-9]+[ %TAB%]+[0-9]+~ startoffs)
+		PATCH_IF set_area BEGIN
+			PATCH_IF ( offs >= 0 ) BEGIN
+				SET offs1 = INDEX_BUFFER(~[%WNL%%LNL%%MNL%]~ offs)
+				SET delete = offs1 - offs
+			END ELSE BEGIN
+				SET offs = INDEX_BUFFER(~{~) + 1
+				SPRINT nl ~%LNL%%TAB%%TAB%~
+			END
+		END ELSE BEGIN
+			PATCH_IF ( offs >= 0 ) BEGIN
+				SET offs1 = INDEX_BUFFER(~[%WNL%%LNL%%MNL%]~ offs)
+				READ_ASCII offs areas ( offs1 - offs )
+				INNER_PATCH ~%areas%~ BEGIN
+					REPLACE_EVALUATE ~area[ %TAB%]+\([0-9]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([0-9]+\)~
+					BEGIN
+						SET coord_x = ~%MATCH1%~
+						SET coord_y = ~%MATCH2%~
+						SET width 	= ~%MATCH3%~
+						SET height 	= ~%MATCH4%~
+					END
+					~area %MATCH1% %MATCH2% %MATCH3% %MATCH4%~
+				END
+			END
+		END
+	END
+	PATCH_IF set_area BEGIN
+		INNER_PATCH_SAVE ~element_text~ ~%element_text%~ BEGIN
+			PATCH_IF ( delete > 0 ) BEGIN
+				DELETE_BYTES offs delete
+			END
+			SPRINT ~new_area~ ~%nl%area%TAB%%coord_x% %coord_y% %width% %height%~
+			SET len = STRING_LENGTH ~%new_area%~
+			INSERT_BYTES offs len
+			WRITE_ASCIIE offs ~%new_area%~
+		END
+	END
+END
+
+
+
+
+
+
+
+
+
+
+

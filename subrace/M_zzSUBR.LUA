@@ -24,9 +24,21 @@
 --	elseif (var == 7) then return " / " .. subrStrings.HALFLING_STRONGHEART
 --	elseif (var == 8) then return " / " .. subrStrings.HALFLING_GHOSTWISE
 --	elseif (var == 9) then return " / " .. subrStrings.GNOME_DEEP
---	elseif (var == 9) then return " / " .. subrStrings.MOON_ELF
+--	elseif (var == 11) then return " / " .. subrStrings.MOON_ELF
 --	end
 --end
+zZsubrTitleTable = {
+	['%Ztext_aasimar%'] = {1, %aasimar_desc%},
+	['%Ztext_tiefling%'] = {2, %tiefling_desc%},
+	['%Ztext_drow%'] = {3, %drow_desc%},
+	['%Ztext_wild_elf%'] = {4, %wild_elf_desc%},
+	['%Ztext_dwfgold%'] = {5, %dwfgold_desc%},
+	['%Ztext_dwfduerg%'] = {6, %dwfduerg_desc%},
+	['%Ztext_hflstrong%'] = {7, %hflstrong_desc%},
+	['%Ztext_hflhide%'] = {8, %hflhide_desc%},
+	['%Ztext_svirfn%'] = {9, %svirfn_desc%},
+	['%Ztext_moon_elf%'] = {11, %moon_elf_desc%},
+}
 
 function subt(chr)
 	--local var = Infinity_GetScriptVarInt("SUBRACE","LOCALS", char)
@@ -46,7 +58,7 @@ function subt(chr)
 	end
 end
 
-function zzApplyRaseSpell(chr)
+--[[function zzApplyRaseSpell(chr)
 	if     (chr == 1) then C:ApplySpellRES("SR_AASIM",chargen) --subrStrings.AASIMAR
 	elseif (chr == 2) then C:ApplySpellRES("SR_TIEFL",chargen) --subrStrings.TIEFLING
 	elseif (chr == 3) then C:ApplySpellRES("SR_DROW",chargen) --subrStrings.DROW
@@ -58,7 +70,7 @@ function zzApplyRaseSpell(chr)
 	elseif (chr == 9) then C:ApplySpellRES("SR_SVIRF",chargen) --subrStrings.GNOME_DEEP
 	end
 	C:SetGlobal("Pl_SUBRACE","GLOBAL",10)
-end --currSubrace
+end --currSubrace]]
 
 function getSubraceTitleButton(currS)
 	if subt(currS) ~= "" then
@@ -181,7 +193,7 @@ function SubRaceOrGeneralHelp(sbr)
 end
 
 function zzSubrClaickable()
-	race = chargen.races[currentChargenRace]
+	local race = chargen.races[currentChargenRace]
 	if race then
 		return true
 	else
@@ -190,7 +202,7 @@ function zzSubrClaickable()
 end
 
 function SubRaceAndRaceOrGeneralHelp(sbr)
-	race = chargen.races[currentChargenRace]
+	local race = chargen.races[currentChargenRace]
 	if race then
 		if (sbr > 0 and sbr ~= 10) then
 			return Infinity_FetchString(race.desc) .. '\n\n________________________\n\n' .. Infinity_FetchString(sbSubraceDataEx[sbr][2])
@@ -213,17 +225,17 @@ zZraceStrings = {
 }
 --nil race subrace idx
 zZsubraceStrings = {
-	{nil, 1, %text_aasimar%, 1},
-	{nil, 1, %text_tiefling%, 2},
-	{nil, 2, %text_drow%, 3},
-	{nil, 2, %text_wild_elf%, 4},
-	{nil, 4, %text_dwfgold%, 5},
-	{nil, 4, %text_dwfduerg%, 6},
-	{nil, 5, %text_hflstrong%, 7},
-	{nil, 5, %text_hflhide%, 8},
-	{nil, 6, %text_svirfn%, 9},
+	{nil, 1, %Ztext_aasimar%, 1},
+	{nil, 1, %Ztext_tiefling%, 2},
+	{nil, 2, %Ztext_drow%, 3},
+	{nil, 2, %Ztext_wild_elf%, 4},
+	{nil, 4, %Ztext_dwfgold%, 5},
+	{nil, 4, %Ztext_dwfduerg%, 6},
+	{nil, 5, %Ztext_hflstrong%, 7},
+	{nil, 5, %Ztext_hflhide%, 8},
+	{nil, 6, %Ztext_svirfn%, 9},
 	{nil, 0, -1, 10},
-	{nil, 2, %text_moon_elf%, 11},
+	{nil, 2, %Ztext_moon_elf%, 11},
 }
 function zzCreateCharInfo(info)
 	local rc = 0
@@ -258,7 +270,15 @@ end
 %duifuc%
 
 
-
+function zZrandomSubrace()
+	local subr = math.random(1,2)
+	if subr == 2 then
+		createSubraceTable(chargen.races[currentChargenRace].id)
+		currChargenSubrace = math.random(1, #sbSubraceData)
+		currSubrace = sbSubraceData[currChargenSubrace][3]
+		onSubraceButton(currSubrace)
+	end
+end
 
 
 
