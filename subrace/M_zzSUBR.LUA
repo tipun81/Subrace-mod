@@ -12,21 +12,6 @@
 --11. MOON_ELF = "Лунный эльф",
 --}
 
---function subt(char)
---	local var = Infinity_GetScriptVarInt("SUBRACE","LOCALS", char)
---	if (var == 0) then return subrStrings.NONE_STRINGS
---	elseif (var == 1) then return " / " .. subrStrings.AASIMAR
---	elseif (var == 2) then return " / " .. subrStrings.TIEFLING
---	elseif (var == 3) then return " / " .. subrStrings.DROW
---	elseif (var == 4) then return " / " .. subrStrings.WILD_ELF
---	elseif (var == 5) then return " / " .. subrStrings.DWARF_GOLD
---	elseif (var == 6) then return " / " .. subrStrings.DWARF_GRAY
---	elseif (var == 7) then return " / " .. subrStrings.HALFLING_STRONGHEART
---	elseif (var == 8) then return " / " .. subrStrings.HALFLING_GHOSTWISE
---	elseif (var == 9) then return " / " .. subrStrings.GNOME_DEEP
---	elseif (var == 11) then return " / " .. subrStrings.MOON_ELF
---	end
---end
 zZsubrTitleTable = {
 	['%Ztext_aasimar%'] = {1, %aasimar_desc%},
 	['%Ztext_tiefling%'] = {2, %tiefling_desc%},
@@ -58,20 +43,6 @@ function subt(chr)
 	end
 end
 
---[[function zzApplyRaseSpell(chr)
-	if     (chr == 1) then C:ApplySpellRES("SR_AASIM",chargen) --subrStrings.AASIMAR
-	elseif (chr == 2) then C:ApplySpellRES("SR_TIEFL",chargen) --subrStrings.TIEFLING
-	elseif (chr == 3) then C:ApplySpellRES("SR_DROW",chargen) --subrStrings.DROW
-	elseif (chr == 4) then C:ApplySpellRES("SR_EWILD",chargen) --subrStrings.WILD_ELF
-	elseif (chr == 5) then C:ApplySpellRES("SR_DWGLD",chargen) --subrStrings.DWARF_GOLD
-	elseif (chr == 6) then C:ApplySpellRES("SR_DUERG",chargen) --subrStrings.DWARF_GRAY
-	elseif (chr == 7) then C:ApplySpellRES("SR_HLSTR",chargen) --subrStrings.HALFLING_STRONGHEART
-	elseif (chr == 8) then C:ApplySpellRES("SR_HLGHO",chargen) --subrStrings.HALFLING_GHOSTWISE
-	elseif (chr == 9) then C:ApplySpellRES("SR_SVIRF",chargen) --subrStrings.GNOME_DEEP
-	end
-	C:SetGlobal("Pl_SUBRACE","GLOBAL",10)
-end --currSubrace]]
-
 function getSubraceTitleButton(currS)
 	if subt(currS) ~= "" then
 		return subt(currS)
@@ -86,11 +57,13 @@ getSubrace = 0
 sbSubraceData = {}
 srText = ""
 
-function zzSubraceString()
-	if srText == "" then
-		return ""
+
+function zzSubraceString(char)
+	local rstr = Infinity_FetchString(char.race)
+	if srText == "" or char.PC ~= 1 then
+		return rstr
 	else
-		return " ( " .. srText .. " )"
+		return rstr .. " ( " .. srText .. " )"
 	end
 end
 
