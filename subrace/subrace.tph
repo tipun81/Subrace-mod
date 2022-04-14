@@ -52,30 +52,6 @@ ACTION_IF (NOT FILE_EXISTS_IN_GAME ~IDPR113C.BAM~) BEGIN
 	COPY ~subrace/IDPR113C.BAM~ ~override~
 END
 
-/*OUTER_SPRINT t_aasimar   @11
-OUTER_SPRINT t_tiefling  @12
-OUTER_SPRINT t_drow      @13
-OUTER_SPRINT t_wild_elf  @14
-OUTER_SPRINT t_dwfduerg  @19
-OUTER_SPRINT t_dwfgold   @18
-OUTER_SPRINT t_hflstrong @15
-OUTER_SPRINT t_hflhide   @16
-OUTER_SPRINT t_svirfn    @17
-OUTER_SPRINT t_podr      @20
-OUTER_SPRINT t_moon_elf  @1103
-
-
-OUTER_SET text_aasimar   = RESOLVE_STR_REF(~%t_aasimar%~)
-OUTER_SET text_tiefling  = RESOLVE_STR_REF(~%t_tiefling%~)
-OUTER_SET text_drow      = RESOLVE_STR_REF(~%t_drow%~)
-OUTER_SET text_wild_elf  = RESOLVE_STR_REF(~%t_wild_elf%~)
-OUTER_SET text_dwfduerg  = RESOLVE_STR_REF(~%t_dwfduerg%~)
-OUTER_SET text_dwfgold   = RESOLVE_STR_REF(~%t_dwfgold%~)
-OUTER_SET text_hflstrong = RESOLVE_STR_REF(~%t_hflstrong%~)
-OUTER_SET text_hflhide   = RESOLVE_STR_REF(~%t_hflhide%~)
-OUTER_SET text_svirfn    = RESOLVE_STR_REF(~%t_svirfn%~)
-OUTER_SET text_moon_elf  = RESOLVE_STR_REF(~%t_moon_elf%~)*/
-
 
 LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_aasimar   STR_VAR bam_file="SRSUBICO" RET text_aasimar=index   Ztext_aasimar=strref   END
 LAF APPEND_STATDESC_ENTRY INT_VAR strref=text_drow      STR_VAR bam_file="SRSUBICO" RET text_drow=index      Ztext_drow=strref      END
@@ -211,26 +187,11 @@ COPY ~subrace/spell.spl~ ~override/SR_HLSTR.spl~
    // +1 axe star
   LPF ADD_SPELL_EFFECT INT_VAR opcode=233 power=1 target=2 timing=9 parameter1=1 parameter2=65628 END
 
-/*COPY ~subrace/spell.spl~ ~override/SR_HLGH1.spl~
-   //Find traps +5
-  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_HLGH1 END
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=321 power=1 target=2 duration=1 STR_VAR resource=SR_HLGHO END
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflhide END
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=5 END
-   //Give innate ability
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SPCL412" END
-
-CREATE EFF SR_HLGHO
-	WRITE_LONG 0x10 146
-	WRITE_LONG 0x14 2
-	WRITE_LONG 0x20 1
-	WRITE_LONG 0x24 1
-	WRITE_ASCII 0x30 ~SR_HLGH1~ (8)*/
 
 COPY ~subrace/spell.spl~ ~override/SR_HLGHO.spl~
   //Portrait icon
   LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_hflhide END
-  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=205 parameter2=115 STR_VAR resource=SR_HLGHO END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=318 power=1 target=2 duration=1 parameter1=205 parameter2=115 STR_VAR resource=SR_HLGHO END
    //Find traps +5
   LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=5 END
    //Give innate ability
@@ -287,7 +248,7 @@ COPY ~subrace/spell.spl~ ~override/SR_SVIRF.spl~
   //Charisma -1
   LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
   //Charisma -1
-  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_SVIRF END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_SVIRF END
   LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
   
 
@@ -339,7 +300,7 @@ COPY ~subrace/spell.spl~ ~override/SR_DUERG.spl~
    //Charisma -1
   LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
   //Charisma -1
-  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_DUERG END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=318 power=1 target=2 duration=1 parameter1=3 parameter2=133 STR_VAR resource=SR_DUERG END
   LPF ADD_SPELL_EFFECT INT_VAR opcode=6  power=1  target=2 timing=1  parameter1="-1" END
 
 //BLOCKEND
@@ -408,8 +369,8 @@ COPY ~subrace/effect.EFF~ ~override/SRDBLIND.EFF~
 
 COPY ~subrace/spell.spl~ ~override/SRDBLIND.spl~
   LPF ADD_SPELL_EFFECT INT_VAR opcode=321 target=2 timing=1 STR_VAR resource="SRDBLIND" END
-  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 parameter2=%notoutdoor% duration=1 STR_VAR resource="SRDBLIND" END
-  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1 target=2 parameter2=90 duration=1 STR_VAR resource="SRDBLIND" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=318 power=1 target=2 parameter2=%notoutdoor% duration=1 STR_VAR resource="SRDBLIND" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=318 power=1 target=2 parameter2=90 duration=1 STR_VAR resource="SRDBLIND" END
   //-1 THAC0
   LPF ADD_SPELL_EFFECT INT_VAR opcode=278 power=1 target=2 parameter1="-1" duration=60 END
   //-1 Saves
@@ -444,7 +405,7 @@ COPY ~subrace/effect.EFF~ ~override/SRSVSHD.EFF~
 
 COPY ~subrace/spell.spl~ ~override/SRSVSHD.spl~
   LPF ADD_SPELL_EFFECT INT_VAR opcode=321 target=2 timing=1 STR_VAR resource="SRSVSHD" END
-  LPF ADD_SPELL_EFFECT INT_VAR /*opcode=324*/ opcode=318 power=1  target=2 parameter2=%outdoor% duration=1 STR_VAR resource="SRSVSHD" END
+  LPF ADD_SPELL_EFFECT INT_VAR opcode=318 power=1  target=2 parameter2=%outdoor% duration=1 STR_VAR resource="SRSVSHD" END
   LPF ADD_SPELL_EFFECT INT_VAR opcode=275 power=1 target=2 duration=60 parameter1=10 END
   LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 duration=60 parameter1=10 END
 //BLOCKEND
@@ -492,32 +453,6 @@ ACTION_FOR_EACH scr IN HAERDALI HAER25 BEGIN
   END
 END
 
-/*COPY ~subrace/spell.spl~ ~override/SR_KORG.spl~
-  //Portrait icon
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_dwfduerg END
-  //Set spell state
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=328 power=1 target=2 timing=9  parameter2=%CRE_BLINDED_IWD% special=1  END
-   //Find traps +10
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=91  power=1 target=2 timing=9 parameter1=10 END
-   //Save vs. spells +1
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=37  power=1 target=2 timing=9 parameter1=1 END
-   //Move silently +20
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=59  power=1 target=2 timing=9 parameter1=20 END
-   //Give innate ability
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=171 power=1 target=2 timing=9  STR_VAR resource="SRSVINV" END
-   //Day blindness
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=272 power=1 target=2 timing=9 parameter1=6 parameter2=3  STR_VAR resource="SRDBLIND" END
-  //XP bonus - 90%
-  LPF ADD_SPELL_EFFECT INT_VAR opcode=104 power=1 target=2 timing=9 parameter1=90 parameter2=2 END
-
-ACTION_FOR_EACH scr IN KORGAN KORG25 BEGIN
-  ACTION_IF FILE_EXISTS_IN_GAME ~%scr%.bcs~ THEN BEGIN
-    OUTER_SPRINT ~SUBRA~ ~KORG~
-    OUTER_SET lc_subr = 6
-    EXTEND_TOP ~%scr%.bcs~ ~subrace/sr_subr.baf~ EVALUATE_BUFFER
-  END
-END*/
-
 COPY ~subrace/spell.spl~ ~override/SR_CAEL.spl~
   //Portrait icon
   LPF ADD_SPELL_EFFECT INT_VAR opcode=142 power=1 target=2 timing=9 parameter2=text_aasimar END
@@ -556,272 +491,8 @@ END
 ////BLOCKEND
 
 //BLOCK CHARACTER RECORD
-//COPY_EXISTING ~ui.menu~ ~override~
-//	LPM APPLY_SPELL_SUBRACE_TO_CRE
-//	BUT_ONLY_IF_IT_CHANGES
-
 
 COPY_EXISTING ~ui.menu~ ~override~
 	LPM SHOW_IN_CHARACTER_RECORD
 	BUT_ONLY_IF_IT_CHANGES
 //BLOCKEND
-
-/* NEW SUBRACES
-
-
-SHIELD DWARVES: Shield dwarves, also known as mountain dwarves were among the most common of the dwarven peoples. Once the rulers of mighty kingdoms across FaerГ»n, the shield dwarves had since fallen by the wayside after centuries of warfare with their goblinoid enemies. Since then, shield dwarves were less commonly seen throughout FaerГ»n, though during the last decades the subrace, spurred on by the Thunder Blessing, began to retake an important role in local politics.
-
-Shield dwarves have the following traits:
-
-вЂ“ +2 racial bonus to Saving Throws vs. Paralysis/Poison/Death, vs. Rod/Staff/Wand, and vs. Spell, with additional bonuses based on Constitution.
-
-вЂ“ Infravision.
-
-вЂ“ +10% Open Locks, +15% Find Traps, +5% Detect Illusion, +10% Set Traps.
-
-вЂ“ +1 Constitution, -1 Dexterity, -1 Charisma.
-
-вЂ“ +1 racial bonus to attack rolls against orcs (including half-orcs) and goblinoids (including goblins, hobgoblins, and bugbears.
-
- 
-
-GOLD DWARVES: Gold dwarves, also known as hill dwarves are the aloof, confident and sometimes proud subrace of dwarves that predominantly came from the Great Rift. They are known to be particularly stalwart warriors and shrewd traders. Gold dwarves are often trained specifically to battle the horrendous aberrations that were known to come from the Underdark.
-
- 
-
-Gold dwarves have the following traits:
-
-вЂ“ +2 racial bonus to Saving Throws vs. Paralysis/Poison/Death, vs. Rod/Staff/Wand, and vs. Spell, with additional bonuses based on Constitution.
-
-вЂ“ Infravision.
-
-вЂ“ +10% Open Locks, +15% Find Traps, +5% Detect Illusion, +10% Set Traps.
-
-вЂ“ +1 Constitution, -2 Dexterity.
-
-вЂ“ +1 racial bonus to attack rolls against aberrations.
-
- 
-
-GRAY DWARVES: Also known as duergar, the gray dwarves of the Forgotten Realms live even deeper underground than their shield dwarf and gold dwarf cousins. The duergar share little in common with other dwarves and practice slavery in their monstrous subterranean cities. Often motivated by greed and a thirst for power, gray dwarves are known throughout the Realms as devious, efficient warriors. Duergar almost always have gray hair and skin.
-
- 
-
-Gray dwarves (duergar) have the following traits:
-
-вЂ“ +4 racial bonus to Saving Throws vs. Paralysis/Poison/Death and vs. Rod/Staff/Wand, with additional bonuses based on Constitution.
-
-вЂ“ +3 racial bonus vs. Spell, with additional bonuses based on Constitution.
-
-вЂ“ Infravision.
-
-вЂ“ Light Sensitivity: -1 penalty to hit rolls, damage rolls and saving throws made in the daylight.
-
-вЂ“ Spell-like abilities: Invisibility once per day.
-
-вЂ“ +10% Open Locks, +30% Find Traps, +10% Detect Illusion, +10% Set Traps, +20% Move Silently
-
-вЂ“ +1 Constitution, -1 Dexterity, -2 Charisma.
-
-вЂ“ +1 racial bonus to attack rolls against mind flayers.
-
-вЂ“ Duergar are more powerful than other races and gain 90% of overall experience.
-
- 
-
-MOON ELVES: Moon elves are the most common sort of elves in FaerГ»n. Also called silver elves, they have fair skin (sometimes tinged with blue) and hair of silver-white, black, or blue. (Humanlike colors are rare, but possible). Their eyes are blue or green, with gold flecks. They are the elven subrace most tolerant of humankind, and most half elves are descended from moon elves.
-
- 
-
-Moon elves have the following traits:
-
-вЂ“ 90% resistance against charm and sleep magics.
-
-вЂ“ Infravision.
-
-вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
-
-вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
-
-вЂ“ +1 Dexterity, -1 Constitution.
-
- 
-
-SUN ELVES: Sun elves are less common across FaerГ»n than moon elves, because most live on Evermeet, where nonelves are not allowed. Also called gold elves, they have bronze skin, golden blond, copper, or black hair, and green or gold eyes. These are seen as the most civilized and haughty elves, preferring to remain separate from nonelven races.
-
- 
-
-Sun elves have the following traits:
-
-вЂ“ 90% resistance against charm and sleep magics.
-
-вЂ“ Infravision.
-
-вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
-
-вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
-
-вЂ“ +1 Intelligence, -1 Constitution.
-
- 
-
-WILD ELVES: The very rare wild elves are rarely seen by others, because they live in the heart of thick forests and they have incredible skill at keeping hidden. Also called green elves, their skin tends to be dark brown, and their hair ranges from black to light brown, lightening to silvery white with age.
-
- 
-
-Wild elves have the following traits:
-
-вЂ“ 90% resistance against charm and sleep magics.
-
-вЂ“ Infravision.
-
-вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
-
-вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
-
-вЂ“ +1 Dexterity, -1 Intelligence.
-
- 
-
-WOOD ELVES: Wood elves are reclusive, but less so than the almost feral wild elves. Also called copper elves, they have coppery skin tinged with green, and brown, green, or hazel eyes. Their hair is usually brown or black, with blond and coppery-red occasionally found.
-
- 
-
-Wood elves have the following traits:
-
-вЂ“ 90% resistance against charm and sleep magics.
-
-вЂ“ Infravision.
-
-вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
-
-вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
-
-вЂ“ +1 Strength, +1 Dexterity, -1 Intelligence, -1 Charisma.
-
- 
-
-STAR ELVES: The green depths of the Yuirwood hide an ancient secret long forgotten by folk beyond AglarondвЂ™s borders, and not widely known even withinвЂ”the star elves, an elven subrace that retreated from FaerГ»n to an extraplanar refuge known as SildГ«yuir. Sometimes referred to in ancient texts as mithral elves, the star elves concealed the existence of their hidden kingdom for almost two thousand years, leaving behind nothing but mysterious ruins and old, strong magic in the stone circles of the Yuirwood.
-
- 
-
-Star elves have the following traits:
-
-вЂ“ 90% resistance against charm and sleep magics.
-
-вЂ“ Infravision.
-
-вЂ“ +1 racial bonus to attack rolls with bows, short swords, and long swords.
-
-вЂ“ -5% Open Locks, +5% Pick Pockets, +5% Move Silently, +10% Hide in Shadows.
-
-вЂ“ +1 Charisma, -1 Constitution.
-
- 
-
-DROW: Dark elves, also known as drow, are the subterranean cousins of moon elves. Their black skin and pale hair are a curse for their allegiance with the spider goddess, Lolth. Drow societies are usually ruled by cruel priestesses of Lolth and their noble houses. Dark elves are known for their arrogance, cruelty, and penchant for civil war.
-
- 
-
-Drow have the following traits:
-
-вЂ“ 90% resistance against charm and sleep magics.
-
-вЂ“ Magic Resistance: 20% (+1% per character level).
-
-вЂ“ +1 racial bonus to Saving Throws vs. Spell.
-
-вЂ“ Spell-like abilities: Faerie Fire three times per day.
-
-вЂ“ Infravision.
-
-вЂ“ Light Sensitivity: -1 penalty to hit rolls, damage rolls and saving throws made in the daylight.
-
-вЂ“ +1 racial bonus to attack rolls with crossbows, short swords, and scimitars.
-
-вЂ“ +10% Pick Pockets, +15% Move Silently, +30% Hide in Shadows.
-
-вЂ“ +1 Dexterity, -1 Constitution, +1 Intelligence, +1 Charisma.
-
-вЂ“ Drow are more powerful than other races and gain 90% of overall experience.
-
- 
-
-LIGHTFOOT HALFLINGS: The most common type of halflings seen in the world, the lightfoots are the most likely to give in to their desire to wander. They are at home living side by side with folk of many different races and cultures. Lightfoot halflings are more likely to worship nonhalfling deities than any other halfling subrace.
-
- 
-
-Lightfoot halflings have the following traits:
-вЂ“ +2 bonus to Saving Throws vs. Paralysis/Poison/Death, vs. Rod/Staff/Wand, and vs. Spell, with additional bonuses based on Constitution.
-вЂ“ +1 racial bonus to attack rolls with slings.
-вЂ“ +5% Open Locks, +5% Find Traps, +5% Pick Pockets, +10% Move Silently, +15% Hide in Shadows.
-вЂ“ +1 Dexterity, -1 Strength, -1 Wisdom.
-
- 
-
-GHOSTWISE HALFLINGS: Ghostwise halflings are the feral, reclusive cousins of lightfoot and strongheart halflings. They are found most often in the southern forests of the Realms living in small communities. Ghostwise halflings are rarely seen in large cities, but occasionally set out to explore the world for reasons known only to them. Visitors to ghostwise settlements often report that the halflings have kinship so tight with their fellows that they can communicate without speaking.
-
- 
-
-Ghostwise halflings have the following traits:
-вЂ“ +2 bonus to Saving Throws vs. Paralysis/Poison/Death and vs. Rod/Staff/Wand, with additional bonuses based on Constitution.
-
-вЂ“ +1 bonus to Saving Throws vs. Spell, with additional bonuses based on Constitution.
-вЂ“ +1 racial bonus to attack rolls with slings and spears.
-вЂ“ +15% Find Traps, +20% Move Silently, +20% Hide in Shadows.
-вЂ“ +1 Dexterity, -1 Strength, -1 Wisdom.
-
- 
-
-STRONGHEART HALFLINGS: While the lightfoot halflings value the experience of travel and the sight of new lands and peoples, the strongheart halflings are a more organized, orderly, and industrious race.  Strongheart halflings often surprise those more familiar with their wandering lightfoot cousins with their confident and readily competitive nature.
-
- 
-
-Strongheart halflings have the following traits:
-вЂ“ +2 bonus to Saving Throws vs. Paralysis/Poison/Death and vs. Rod/Staff/Wand, with additional bonuses based on Constitution.
-
-вЂ“ +1 bonus to Saving Throws vs. Spell, with additional bonuses based on Constitution.
-вЂ“ +1 racial bonus to attack rolls with slings.
-вЂ“ +10% Open Locks, +10% Find Traps, +10% Pick Pockets, +15% Move Silently, +20% Hide in Shadows.
-вЂ“ +1 Dexterity, -1 Strength, -1 Wisdom.
-
- 
-
-AASIMAR: Aasimar carry the blood of a celestial, the begotten offspring from the union of a mortal and a deity. Aasimar are usually good-aligned and fight against evil in the world. They typically have fair skin, golden eyes, and often a birthmark in the shape of the deity's holy symbol. Aasimar are blessed with insight and personal magnetism and are typically paladins.
-
- 
-
-Aasimars have the following traits:
-
-вЂ“ Acid, cold and electrical resistance: 10.
-
-вЂ“ Infravision.
-
-вЂ“ Spell-like abilities: Sunscorch once per day.
-
-вЂ“ +1 Wisdom, +1 Charisma.
-
-вЂ“ +10% Find Traps, +5% Detect Illusions.
-
-вЂ“ Aasimars are slightly more powerful than other races and gain 95% of overall experience.
-
- 
-
-TIEFLINGS: The infernal counterpart to aasimar, tieflings are humans with a hint of the diabolical in their bloodline. Though their appearance is mostly human, they often have telltale signs that belie their ancestry. Tieflings usually have dusky skin and dark or reddish hair. Though many sport small horns, cat eyes, or other bizarre features, most tieflings try to hide their abnormalities from humans.
-
- 
-
-Tieflings have the following traits:
-
-вЂ“ Fire, cold and electrical resistance: 10.
-
-вЂ“ Infravision.
-
-вЂ“ Spell-like abilities: Blindness once per day.
-
-вЂ“ +10% Move Silently, +10% Hide in Shadows.
-
-вЂ“ +1 Intelligence, +1 Dexterity.
-
-вЂ“ Tieflings are slightly more powerful than other races and gain 95% of overall experience.
-*/
