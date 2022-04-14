@@ -451,7 +451,7 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 		SET ofs2 = INDEX_BUFFER(~[%WNL%%LNL%%MNL%]end~ ofs)
 		READ_ASCII ofs line ( ofs2 - ofs )
 		INNER_PATCH_SAVE code ~%line%~ BEGIN
-			REPLACE_TEXTUALLY ~Infinity_FetchString(char\.race)~ ~Infinity_FetchString(char.race) .. zzSubraceString()~
+			REPLACE_TEXTUALLY ~Infinity_FetchString(char\.race)~ ~zzSubraceString(char)~
 		END
 		DELETE_BYTES ofs ( ofs2 - ofs )
 		SET codeLen = STRING_LENGTH ~%code%~
@@ -464,7 +464,7 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 			SET ofs2 = INDEX_BUFFER(~Infinity_FetchString(characters\[currentID\]\.race)~ ofs)
 			SET ofs3 = INDEX_BUFFER(~"~ ofs2)
 			DELETE_BYTES ofs2 ( ofs3 - ofs2 )
-			TEXT_SPRINT code ~Infinity_FetchString(characters[currentID].race) .. zzSubraceString()~
+			TEXT_SPRINT code ~zzSubraceString(characters[currentID])~
 			SET codeLen = STRING_LENGTH ~%code%~
 			INSERT_BYTES ofs2 codeLen
 			WRITE_ASCIIE ofs2 ~%code%~
@@ -479,7 +479,6 @@ ACTION_IF INSTALLED_TIPUN BEGIN
 END ELSE BEGIN
 	OUTER_SPRINT file ~M_RANDOM.LUA~
 END
-
 COPY_EXISTING ~%file%~ ~override~
 	SET offs = INDEX_BUFFER(~^[ %TAB%]*.*OnRaceSelectButtonClick.*$~)
 	PATCH_IF ( offs >= 0 ) BEGIN
@@ -496,7 +495,7 @@ COPY_EXISTING ~M_ZZFUNC.LUA~ ~override~
 	SET offs = INDEX_BUFFER(~function[ %TAB%]+zZgetRaceDescCharRec~)
 	PATCH_IF ( offs >= 0 ) BEGIN
 		SET offs1 = INDEX_BUFFER(~return[ %TAB%]+str~ offs)
-		SPRINT line ~str = srTextDesc .. '\n--------\n' .. str%LNL%%TAB%~
+		SPRINT line ~if srTextDesc %tilde%= "" then%LNL%%TAB%%TAB%if characters[currentID].PC == 1 then%LNL%%TAB%%TAB%%TAB%str = srTextDesc .. '\n-------------------\n' .. str%LNL%%TAB%%TAB%else%LNL%%TAB%%TAB%%TAB%str = srTextDesc%LNL%%TAB%%TAB%end%LNL%%TAB%end%LNL%%TAB%~
 		SET len = STRING_LENGTH ~%line%~
 		INSERT_BYTES offs1 len
 		WRITE_ASCIIE offs1 ~%line%~
