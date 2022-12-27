@@ -19,7 +19,7 @@ Available Values:
 8: Ghostwise Halfling
 9: Deep Gnome (Svirfneblin)
 
-Subrace has also been added to Viconia(Drow), Baeloth(Drow), Haerdalis(Tiefling), and Caelar(Aasimar). They can be checked in the same way. 
+Subrace has also been added to Viconia(Drow), Baeloth(Drow), Haerdalis(Tiefling), and Caelar(Aasimar). They can be checked in the same way.
 
 AASIMAR
 Aasimar carry the blood of a celestial, the begotten offspring from the union of a mortal and a deity.  Aasimar are usually good-aligned and fight against evil in the world.  They typically have fair skin, golden eyes, and often a birthmark in the shape of the deity's holy symbol.  Aasimar are blessed with insight and personal magnetism and are typically paladins.
@@ -30,7 +30,7 @@ Advantages:
  Acid, cold, and electrical resistance: +20
  Sunscorch 1/Day
  Darkvision
- 
+
 Disadvantages:
  Gets only 95% of experience
 
@@ -40,7 +40,7 @@ The infernal counterpart to aasimar, tieflings are humans with a hint of the dia
 Advantages:
  +1 Intelligence
  +1 Dexterity
- Fire, cold, and electrical resistance: +20 
+ Fire, cold, and electrical resistance: +20
  +10 Hide in shadows and Move silently
  Blindness 1/Day
  Darkvision
@@ -55,7 +55,7 @@ Dark elves, also known as drow, are the subterranean cousins of moon elves. Thei
 Advantages:
  +1 Intelligence
  +1 Charisma
- +2 Search traps
+ +10 Search traps
  50% Magic resistance
  +1 to Saving throws against spells
  Faerie Fire 3/day
@@ -80,7 +80,7 @@ Advantages:
  +1 Axe skill
 
 Disadvantages:
- no
+ None
 
 GHOSTWISE HALFLING
 Ghostwise halflings are the feral, reclusive cousins of lightfoot and strongheart halflings. They are found most often in the southern forests of the Realms living in small communities. Ghostwise halflings are rarely seen in large cities, but occasionally set out to explore the world for reasons known only to them. Visitors to ghostwise settlements often report that the halflings have kinship so tight with their fellows that they can communicate without speaking.
@@ -90,7 +90,7 @@ Advantages:
  Set trap 1/Day (for thieves)
 
 Disadvantages:
- no
+  None
 
 DEEP GNOME
 Also known as svirfneblin, the deep gnomes of the Realms are a secretive, mysterious race. Found in the deepest caverns of the Underdark, the svirfneblin live in constant fear of slavery or destruction at the hands or dark elves, mind flayers, and duergar. Deep gnomes are legendary for their ability to handle stone and gems. They have brown or gray skin and gray or white hair.

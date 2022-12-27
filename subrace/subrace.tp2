@@ -1,6 +1,6 @@
 BACKUP ~subrace/backup~
 AUTHOR ~tipun. tipun.iwd@google.com~
-VERSION ~0.3.1~ 
+VERSION ~0.3.2~
 
 README ~subrace/readme.txt~
 
@@ -39,21 +39,3 @@ REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet iwdee~ @1000003
 OUTER_SET sr_colors = 2
 
 INCLUDE ~subrace/subrace.tph~
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

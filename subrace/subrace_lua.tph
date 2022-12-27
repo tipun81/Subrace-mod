@@ -135,7 +135,7 @@ COPY_EXISTING ~ui.menu~ ~override~
 		RET
 			chargen_race_start = menu_text
 			menu_menu = menu_text_edit
-			success 
+			success
 			menu_menu_start = offset_start
 			menu_menu_end = offset_end
 	END
@@ -371,9 +371,9 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 			END
 		END
 	END
-	
+
 	SPRINT if_patch ~if (zZsubrTitleTable[tostring(v.strRef)] %tilde%= nil) then~
-	
+
 	PATCH_IF GAME_IS ~iwdee~ BEGIN
 		SET ofs = INDEX_BUFFER(~addCharacterDetail(v\.bam,v\.current,Infinity_FetchString(v\.strRef))~)
 		PATCH_IF ( ofs >= 0 ) BEGIN
@@ -409,7 +409,7 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 			INSERT_BYTES ofs codeLen
 			WRITE_ASCIIE ofs ~%code%~
 		END
-		
+
 		//dragonspear
 		PATCH_IF ( INSTALLED_DSUI ) BEGIN
 			SET ofs = 0
@@ -445,7 +445,7 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 				END
 		END
 	END
-	
+
 	SET ofs = INDEX_BUFFER(~function[ %TAB%]+characterDescString(char)~)
 	PATCH_IF ( ofs >= 0 ) BEGIN
 		SET ofs2 = INDEX_BUFFER(~[%WNL%%LNL%%MNL%]end~ ofs)
@@ -501,12 +501,3 @@ COPY_EXISTING ~M_ZZFUNC.LUA~ ~override~
 		WRITE_ASCIIE offs1 ~%line%~
 	END
 	IF_EXISTS
-
-
-
-
-
-
-
-
-
