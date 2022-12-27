@@ -26,9 +26,6 @@ zZsubrTitleTable = {
 }
 
 function subt(chr)
-	--local var = Infinity_GetScriptVarInt("SUBRACE","LOCALS", char)
-	--if (chr == 0) then return subrStrings.NONE_STRINGS
-	--elseif (chr == 1) then return " / " .. --subrStrings.AASIMAR
 	if     (chr == 1) then return Infinity_FetchString(%aasimar_title%) --subrStrings.AASIMAR
 	elseif (chr == 2) then return Infinity_FetchString(%tiefling_title%) --subrStrings.TIEFLING
 	elseif (chr == 3) then return Infinity_FetchString(%drow_title%) --subrStrings.DROW
@@ -82,7 +79,7 @@ function createSubraceTable(race)
 			{%Zdrow_title%, %drow_desc%, 3},
 			{%Zwild_elf_title%, %wild_elf_desc%, 4},
 			{%Zmoon_elf_title%, %moon_elf_desc%, 11},
-        }    
+		}
 	end
 	if race == 3 then --halfelf
 		sbSubraceData = {
@@ -94,14 +91,14 @@ function createSubraceTable(race)
 			{%Zdwarf_title%, %bgdwarf%, 10},
 			{%Zdwfgold_title%, %dwfgold_desc%, 5},
 			{%Zdwfduerg_title%, %dwfduerg_desc%, 6},
-		}    
+		}
 	end
 	if race == 5 then --halfling
 		sbSubraceData = {
 			{%Zhalfling_title%, %bghalfling%, 10},
 			{%Zhflstrong_title%, %hflstrong_desc%, 7},
 			{%Zhflhide_title%, %hflhide_desc%, 8},
-		}    
+		}
 	end
 	if race == 6 then --gnome
 		sbSubraceData = {
@@ -153,7 +150,6 @@ function getSubraceDescription(row)
 end
 
 function onSubraceButton(buttonNum)
-	--local gl = sbSubraceData[buttonNum][3]
 	C:SetGlobal("Pl_SUBRACE","GLOBAL",buttonNum)
 end
 
@@ -252,19 +248,3 @@ function zZrandomSubrace()
 		onSubraceButton(currSubrace)
 	end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

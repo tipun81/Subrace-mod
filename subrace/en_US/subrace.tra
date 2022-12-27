@@ -44,7 +44,7 @@
 @37   = ~HALFORC~
 
 @40   = ~Sunscorch~
-@41   = ~Sunscorch 
+@41   = ~Sunscorch
 (Evocation)
 
 Level: 1
@@ -56,7 +56,7 @@ Area of Effect: 1 creature
 Saving Throw: Reflex half
 Upon completion of this spell, a brilliant ray of scorching heat fires down from the sky. A spell saving throw allows the target to reduce burn damage by half. Target takes 1d6 damage + 1 unit for each level of caster. Undead and monsters sensitive to bright light take 1d6 damage + 2 for each level of caster. Target is also blinded for 3 rounds.~
 @42   = ~Faerie Fire~
-@43   = ~Faerie Fire 
+@43   = ~Faerie Fire
 (Alteration)
 
 Level: 1
@@ -80,7 +80,7 @@ Advantages:
  Acid, cold, and electrical resistance: +20
  Sunscorch 1/Day
  Darkvision
- 
+
 Disadvantages:
  Gets only 95% of experience
  ~
@@ -90,7 +90,7 @@ Disadvantages:
 Advantages:
  +1 Intelligence
  +1 Dexterity
- Fire, cold, and electrical resistance: +20 
+ Fire, cold, and electrical resistance: +20
  +10 Hide in shadows and Move silently
  Blindness 1/Day
  Darkvision
@@ -105,7 +105,7 @@ Disadvantages:
 Advantages:
  +1 Intelligence
  +1 Charisma
- +2 Search traps
+ +10 Search traps
  50% Magic resistance
  +1 to Saving throws against spells
  Faerie Fire 3/day
@@ -130,8 +130,8 @@ Advantages:
  +1 Axe skill
 
 Disadvantages:
- no
- ~
+ None
+  ~
 
 @160  = ~Ghostwise halflings are the feral, reclusive cousins of lightfoot and strongheart halflings. They are found most often in the southern forests of the Realms living in small communities. Ghostwise halflings are rarely seen in large cities, but occasionally set out to explore the world for reasons known only to them. Visitors to ghostwise settlements often report that the halflings have kinship so tight with their fellows that they can communicate without speaking.
 
@@ -140,8 +140,8 @@ Advantages:
  Set trap 1/Day (for thieves)
 
 Disadvantages:
- no
- ~
+ None
+  ~
 
 @170  = ~Also known as svirfneblin, the deep gnomes of the Realms are a secretive, mysterious race. Found in the deepest caverns of the Underdark, the svirfneblin live in constant fear of slavery or destruction at the hands or dark elves, mind flayers, and duergar. Deep gnomes are legendary for their ability to handle stone and gems. They have brown or gray skin and gray or white hair.
 
@@ -223,14 +223,14 @@ Advantages:
  Infravision
  Immunity to sleep, paralysis, blindness
  Strength: +2
- 
+
  Resists 50% different damage. The type of resistance depends on the color:
  - Fire: Brass, Gold, Red
  - Cold: Silver, White
  - Electricity: Blue, Bronze
  - Acid: Black, Copper
  - Poison: Green
- 
+
  Half Dragon Breath:
  Breath attack 1 time per day / 5 level. Damage depends on color:
  - Fire: Brass, Gold, Red
@@ -244,7 +244,7 @@ Advantages:
  - Level 8: 3d6
  - Level 12: 4d6
  - Level 16: 5d6
- A saving throw against breath reduces damage by half. 
+ A saving throw against breath reduces damage by half.
 
 Disadvantages:
  Cannot use helmets, shields, cloaks
@@ -267,24 +267,4 @@ Advantages:
 Disadvantages:
  Constitution: -1~
 @1102 = ~moon elf~
-@1103 = ~Moon Elf~ 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@1103 = ~Moon Elf~

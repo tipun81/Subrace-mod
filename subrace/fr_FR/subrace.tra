@@ -44,7 +44,7 @@
 @37   = ~DEMI-ORQUE~
 
 @40   = ~Rayon de soleil~
-@41   = ~Rayon de soleil 
+@41   = ~Rayon de soleil
 (Evocation)
 
 Niveau : 1
@@ -56,7 +56,7 @@ Zone d'effet : 1 créature
 Jet de sauvegarde : 1/2
 Lorsque ce sort est lancé, un Rayon de soleil s'abat depuis le ciel. Un jet de sauvegarde contre les sorts permet à la cible de réduire les dégâts causés par les brûlures de moitié. La créature visée reçoit 1d6 points de dégâts + 1 point pour chaque niveau de lanceur de sorts. Les morts-vivants et les creatures sensibles au soleil touchés subissent 1d6 points de dégâts + 2 points pour chaque niveau de lanceur de sorts. La cible est également aveuglée pendant 3 rounds.~
 @42   = ~Lueur féérique~
-@43   = ~Lueur féérique 
+@43   = ~Lueur féérique
 (Altération)
 
 Niveau : 1
@@ -80,17 +80,17 @@ Les aasimars bénéficient des traits suivants :
 - Résistance à l'acide, au froid, et à l'électricité : +20
 - Rayon de soleil une fois par jour.
 - Infravision.
- 
+
 Inconvénients :
 - Obtient seulement 95 % de l'expérience acquise.
  ~
- 
+
 @120  = ~Les équivalents infernaux des aasimar sont nommés tieffelins, des humains avec une légère part diabolique dans leur lignée. Bien que leur apparence soit généralement humaine, ils présentent souvent des signes révélateurs de leur ascendance. Les tieffelins ont généralement une peau sombre et des cheveux foncés ou roux. Bien que beaucoup arborent de petites cornes, des yeux de chat ou d'autres caractéristiques insolites, la plupart des tieffelins ont à cœur de cacher leurs différences aux humains.
 
 Avantages :
  +1 en Intelligence
  +1 en Dextérité
-- Résistance au feu, au froid, et à l'électricité : +20 
+- Résistance au feu, au froid, et à l'électricité : +20
 - Bonus de 10 % en Déplacement silencieux et Se cacher dans l'ombre.
 - Cécité une fois par jour.
 - Infravision.
@@ -105,7 +105,7 @@ Inconvénients :
 Avantages :
  +1 en Intelligence
  +1 en Charisme
- +2 en Détection des pièges
+ +10 en Détection des pièges
 - résistance à la magie : 50%
 - Bénéficie d'un bonus de 1 pour les jets de sauvegarde contre les sorts.
 - Lueur féérique trois fois par jour.
@@ -223,16 +223,16 @@ Avantages :
 - Infravision
 - Immunité à la paralysie, au sommeil et à la cécité.
  +2 en Force
- 
+
  50% de résistance à un type de dégat, dépendant de la couleur :
  - Feu : Laiton, Or, Rouge
  - Froid : Argent, Blanc
  - Electricité : Bleu, Bronze
  - Acide : Noir, Cuivre
  - Poison : Vert
- 
+
  Souffle de Demi-Dragon :
- - Souffle une fois par jour tout les 5 niveaux. 
+ - Souffle une fois par jour tout les 5 niveaux.
  Les dégâts dépendent de la couleur :
  - Feu : Laiton, Or, Rouge
  - Froid : Argent, Blanc
@@ -245,7 +245,7 @@ Avantages :
  - Niveau 8 : 3d6
  - Niveau 12 : 4d6
  - Niveau 16 : 5d6
- Un jet de sauvegarde contre le Souffle réduit les dégats de moitié. 
+ Un jet de sauvegarde contre le Souffle réduit les dégats de moitié.
 
 Inconvénients :
 - Ne peut pas utiliser les casques, les boucliers et les capes.
