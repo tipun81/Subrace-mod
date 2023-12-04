@@ -1,6 +1,6 @@
 BACKUP ~subrace/backup~
 AUTHOR ~tipun. tipun.iwd@google.com~
-VERSION ~0.3.1~ 
+VERSION ~0.3.2~
 
 README ~subrace/readme.txt~
 
@@ -10,6 +10,7 @@ ALWAYS
   OUTER_SET INSTALLED_LEUIBG = INSTALLED_LEUI AND GAME_IS ~bgee bg2ee eet~
   OUTER_SET INSTALLED_DSUI   = (FILE_EXISTS_IN_GAME ~RGCGWDE.png~)
   OUTER_SET INSTALLED_TIPUN  = (FILE_EXISTS_IN_GAME ~m_zZFunc.lua~)
+  OUTER_SET INSTALLED_IUI	 = (MOD_IS_INSTALLED ~infinity_ui.tp2~ 0)
 END
 
 LANGUAGE ~Russian~
@@ -39,21 +40,3 @@ REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet iwdee~ @1000003
 OUTER_SET sr_colors = 2
 
 INCLUDE ~subrace/subrace.tph~
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

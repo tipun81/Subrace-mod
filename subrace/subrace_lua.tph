@@ -135,7 +135,7 @@ COPY_EXISTING ~ui.menu~ ~override~
 		RET
 			chargen_race_start = menu_text
 			menu_menu = menu_text_edit
-			success 
+			success
 			menu_menu_start = offset_start
 			menu_menu_end = offset_end
 	END
@@ -198,6 +198,12 @@ COPY_EXISTING ~ui.menu~ ~override~
 			SET coord_x_btn = coord_x_list + width_list / 2 - width_btn / 2
 			SET coord_y_btn = coord_y_list + height_list - height_btn - 7
 			SET height_list = height_list - height_btn - 14
+			PATCH_IF ( INSTALLED_IUI ) BEGIN
+				SET coord_x_btn = 100
+				SET coord_y_btn = 350
+				SET width_btn = 200
+				SET height_btn = 70
+			END	
 			LPF FC_GETSET_ELEMENT_AREA
 				INT_VAR set_area = 1 coord_x = coord_x_btn coord_y = coord_y_btn width = width_btn height = height_btn
 				STR_VAR element_text = EVAL "%element_text%"
@@ -215,16 +221,18 @@ COPY_EXISTING ~ui.menu~ ~override~
 				RET element_text
 			END
 			LPM FC_INSERT_MENU_ELEMENT
-			LPF FC_REPLACE_ELEMENT_ACTION
-				INT_VAR replace = 0
-				STR_VAR
-					element_text = EVAL "%element_text_new%"
-					action_string = EVAL "onSubraceButton(currSubrace)"
-					action_check = EVAL "Infinity_PopMenu"
-				RET element_text
+			PATCH_IF !(INSTALLED_IUI) BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0
+					STR_VAR
+						element_text = EVAL "%element_text_new%"
+						action_string = EVAL "onSubraceButton(currSubrace)"
+						action_check = EVAL "Infinity_PopMenu"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
 			END
-			LPM FC_UPDATE_MENU_ELEMENT
-		END
+		END	
 	END
 	PATCH_IF success BEGIN //race list patch
 		LPF FC_FIND_UI_MENU_ELEMENT_EX
@@ -324,14 +332,666 @@ COPY_EXISTING ~ui.menu~ ~override~
 		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
 		INSERT_BYTES menu_menu_start len
 		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
-	END ELSE BEGIN
+	END	ELSE BEGIN
 		PATCH_FAIL ~Cannot patch UI.MENU~
 	END
+	PATCH_IF ( INSTALLED_IUI ) BEGIN
+		LPF FC_FIND_UI_MENU
+		STR_VAR
+			menu_name = "CHARGEN_CLASS"
+		RET
+			chargen_race_start = menu_text
+			menu_menu = menu_text_edit
+			success 
+			menu_menu_start = offset_start
+			menu_menu_end = offset_end
+	END
+	PATCH_IF success BEGIN //RACE_TITLE patch
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "RACE_TITLE"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			INNER_PATCH_SAVE ~element_text~ ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~text.+['"]RACE_TITLE['"].*$~ ~text lua "getRaceSubraceTitle(getSubrace)"~
+			END
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		SET success = 1
+	END
+	PATCH_IF success BEGIN //race list patch
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenRace"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x_list=coord_x coord_y_list=coord_y width_list=width height_list=height
+			END
+		END
+	END
+	PATCH_IF success BEGIN //button done
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "OnDoneButtonClick"
+			RET element_text_new=element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text_new%"
+				RET coord_x_btn=coord_x coord_y_btn=coord_y width_btn=width height_btn=height
+			END
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //get subrace
+				REPLACE_TEXTUALLY ~on[ %TAB%]return~ ~enabled "getSubrace == 0"~
+				REPLACE_TEXTUALLY ~text.+['"]DONE_BUTTON['"].*$~ ~text lua "getSubraceTitleButton(currSubrace)"~
+				REPLACE_TEXTUALLY ~clickable.+$~ ~clickable lua "zzSubrClaickable()"~
+			END
+			LPF FC_REPLACE_ELEMENT_ACTION
+				STR_VAR
+					element_text = EVAL "%element_text%"
+					action_string = EVAL "createSubraceTable(chargen.races[currentChargenRace].id)%LNL%%TAB%%TAB%%TAB%getSubrace = 1%LNL%%TAB%%TAB%%TAB%currChargenSubrace = 1"
+				RET element_text
+			END
+			SET coord_x_btn = coord_x_list + width_list / 2 - width_btn / 2
+			SET coord_y_btn = coord_y_list + height_list - height_btn - 7
+			SET height_list = height_list - height_btn - 14
+				SET coord_x_btn = 100
+				SET coord_y_btn = 350
+				SET width_btn = 200
+				SET height_btn = 70	
+			LPF FC_GETSET_ELEMENT_AREA
+				INT_VAR set_area = 1 coord_x = coord_x_btn coord_y = coord_y_btn width = width_btn height = height_btn
+				STR_VAR element_text = EVAL "%element_text%"
+				RET element_text
+			END
+			LPM FC_INSERT_MENU_ELEMENT
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //done subrace
+				REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+				REPLACE_TEXTUALLY ~clickable.+$~ ~clickable lua "currChargenSubrace > 0"~ //%tilde%= nil
+			END
+			LPF FC_REPLACE_ELEMENT_ACTION
+				STR_VAR
+					element_text = EVAL "%element_text%"
+					action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+				RET element_text
+			END
+			LPM FC_INSERT_MENU_ELEMENT
+		END	
+	END
+	PATCH_IF success BEGIN //race list patch
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenRace"
+			RET element_text_new=element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+				REPLACE_TEXTUALLY ~rowheight~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%rowheight~
+				REPLACE_TEXTUALLY ~currentChargenRace~ ~currChargenSubrace~
+				REPLACE_TEXTUALLY ~chargen\.races\[rowNumber\]\.name~ ~sbSubraceData[rowNumber][1]~
+				REPLACE_TEXTUALLY ~table.+['"].*chargen\.races.*['"].*$~ ~table "sbSubraceData"~
+				PATCH_IF GAME_IS ~iwdee~ BEGIN
+					REPLACE_TEXTUALLY ~getRaceHighlightFrame~ ~zZgetRaceHighlightFrame~
+				END
+				PATCH_IF ( INSTALLED_DSUI ) BEGIN
+					REPLACE_TEXTUALLY ~getRaceBackground(~ ~zzgetRaceBackground(~
+				END
+			END
+			LPF FC_REPLACE_ELEMENT_ACTION
+				STR_VAR
+					element_text = EVAL "%element_text%"
+					action_string = EVAL "if currChargenSubrace %tilde%= nil then%LNL%%TAB%%TAB%%TAB%%TAB%currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%end"
+				RET element_text
+			END
+			LPM FC_INSERT_MENU_ELEMENT
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+				REPLACE_TEXTUALLY ~rowheight~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%rowheight~
+			END
+			LPF FC_REPLACE_ELEMENT_ACTION
+				INT_VAR replace = 0
+				STR_VAR
+					element_text = EVAL "%element_text%"
+					action_string = EVAL "if currentChargenRace %tilde%= zZchgenRaceRow then currSubrace = 10 end"
+					action_check = EVAL "if[ %TAB%]+chargen"
+				RET element_text
+			END
+			LPF FC_REPLACE_ELEMENT_ACTION
+				INT_VAR replace = 0 position = 1
+				STR_VAR
+					element_text = EVAL "%element_text%"
+					action_string = EVAL "zZchgenRaceRow = currentChargenRace"
+					action_check = EVAL "OnRaceSelectButtonClick"
+				RET element_text
+			END
+			LPF FC_GETSET_ELEMENT_AREA
+				INT_VAR set_area = 1 coord_x = coord_x_list coord_y = coord_y_list width = width_list height = height_list
+				STR_VAR element_text = EVAL "%element_text%"
+				RET element_text
+			END
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+	END
+		PATCH_IF success BEGIN
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenClass"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+						action_check = EVAL "end"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END		
+	PATCH_IF success BEGIN //description patch
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "text" search_str = "raceOrGeneralHelp"
+			RET element_text_new=element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+				REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+				REPLACE_TEXTUALLY ~raceOrGeneralHelp()~ ~SubRaceOrGeneralHelp(currChargenSubrace)~
+			END
+			LPM FC_INSERT_MENU_ELEMENT
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+				REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%area%TAB%~
+				REPLACE_TEXTUALLY ~raceOrGeneralHelp()~ ~SubRaceAndRaceOrGeneralHelp(currSubrace)~
+			END
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+	END
+	PATCH_IF success BEGIN //button cancel
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "OnCancelButtonClick"
+			RET element_text_new=element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //cancel subrace
+				REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+			END
+			LPF FC_REPLACE_ELEMENT_ACTION
+				STR_VAR
+					element_text = EVAL "%element_text%"
+					action_string = EVAL "currChargenSubrace = nil%LNL%%TAB%%TAB%%TAB%getSubrace = 0%LNL%%TAB%%TAB%%TAB%currSubrace = 10"
+				RET element_text
+			END
+			LPM FC_INSERT_MENU_ELEMENT
+			INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //cancel subrace
+				REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%area%TAB%~
+			END
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+	END
+	LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+	PATCH_IF success BEGIN
+		SET len = STRING_LENGTH ~%menu_menu%~
+		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+		INSERT_BYTES menu_menu_start len
+		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+	END	ELSE BEGIN
+		PATCH_FAIL ~Cannot patch UI.MENU~
+	END
+		LPF FC_FIND_UI_MENU
+			STR_VAR
+				menu_name = "CHARGEN_KIT"
+			RET
+				chargen_race_start = menu_text
+				menu_menu = menu_text_edit
+				success 
+				menu_menu_start = offset_start
+				menu_menu_end = offset_end
+		END	
+		PATCH_IF success BEGIN //RACE_TITLE patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "RACE_TITLE"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text%~ BEGIN
+					REPLACE_TEXTUALLY ~text.+['"]RACE_TITLE['"].*$~ ~text lua "getRaceSubraceTitle(getSubrace)"~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+			SET success = 1
+		END
+		PATCH_IF success BEGIN //race list patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenRace"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_GETSET_ELEMENT_AREA
+					STR_VAR element_text = EVAL "%element_text%"
+					RET coord_x_list=coord_x coord_y_list=coord_y width_list=width height_list=height
+				END
+			END
+		END
+		PATCH_IF success BEGIN //button done
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "OnDoneButtonClick"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_GETSET_ELEMENT_AREA
+					STR_VAR element_text = EVAL "%element_text_new%"
+					RET coord_x_btn=coord_x coord_y_btn=coord_y width_btn=width height_btn=height
+				END
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //get subrace
+					REPLACE_TEXTUALLY ~on[ %TAB%]return~ ~enabled "getSubrace == 0"~
+					REPLACE_TEXTUALLY ~text.+['"]DONE_BUTTON['"].*$~ ~text lua "getSubraceTitleButton(currSubrace)"~
+					REPLACE_TEXTUALLY ~clickable.+$~ ~clickable lua "zzSubrClaickable()"~
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "createSubraceTable(chargen.races[currentChargenRace].id)%LNL%%TAB%%TAB%%TAB%getSubrace = 1%LNL%%TAB%%TAB%%TAB%currChargenSubrace = 1"
+					RET element_text
+				END
+		
+				SET coord_x_btn = 100
+				SET coord_y_btn = 350
+				SET width_btn = 200
+				SET height_btn = 70
+				
+				LPF FC_GETSET_ELEMENT_AREA
+					INT_VAR set_area = 1 coord_x = coord_x_btn coord_y = coord_y_btn width = width_btn height = height_btn
+					STR_VAR element_text = EVAL "%element_text%"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //done subrace
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+					REPLACE_TEXTUALLY ~clickable.+$~ ~clickable lua "currChargenSubrace > 0"~ //%tilde%= nil
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+			END	
+		END
+		PATCH_IF success BEGIN //race list patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenRace"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~rowheight~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%rowheight~
+					REPLACE_TEXTUALLY ~currentChargenRace~ ~currChargenSubrace~
+					REPLACE_TEXTUALLY ~chargen\.races\[rowNumber\]\.name~ ~sbSubraceData[rowNumber][1]~
+					REPLACE_TEXTUALLY ~table.+['"].*chargen\.races.*['"].*$~ ~table "sbSubraceData"~
+					PATCH_IF GAME_IS ~iwdee~ BEGIN
+						REPLACE_TEXTUALLY ~getRaceHighlightFrame~ ~zZgetRaceHighlightFrame~
+					END
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "if currChargenSubrace %tilde%= nil then%LNL%%TAB%%TAB%%TAB%%TAB%currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%end"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~rowheight~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%rowheight~
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "if currentChargenRace %tilde%= zZchgenRaceRow then currSubrace = 10 end"
+						action_check = EVAL "if[ %TAB%]+chargen"
+					RET element_text
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 position = 1
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "zZchgenRaceRow = currentChargenRace"
+						action_check = EVAL "OnRaceSelectButtonClick"
+					RET element_text
+				END
+				LPF FC_GETSET_ELEMENT_AREA
+					INT_VAR set_area = 1 coord_x = coord_x_list coord_y = coord_y_list width = width_list height = height_list
+					STR_VAR element_text = EVAL "%element_text%"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //patch class list
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenClass"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN 
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+						action_check = EVAL "end"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //Patch kit list
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenKit]"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+						action_check = EVAL "end"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+				
+		PATCH_IF success BEGIN //description patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "text" search_str = "classOrGeneralHelp()"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+					REPLACE_TEXTUALLY ~classOrGeneralHelp()~ ~SubRaceOrGeneralHelp(currChargenSubrace)~
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%area%TAB%~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //button cancel
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "OnCancelButtonClick"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //cancel subrace
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currChargenSubrace = nil%LNL%%TAB%%TAB%%TAB%getSubrace = 0%LNL%%TAB%%TAB%%TAB%currSubrace = 10"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //cancel subrace
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%area%TAB%~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+		PATCH_IF success BEGIN
+			SET len = STRING_LENGTH ~%menu_menu%~
+			DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+			INSERT_BYTES menu_menu_start len
+			WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+		END ELSE BEGIN
+		PATCH_FAIL ~Cannot patch UI.MENU~
+		END
+		LPF FC_FIND_UI_MENU
+			STR_VAR
+				menu_name = "CHARGEN_ALIGNMENT"
+			RET
+				chargen_race_start = menu_text
+				menu_menu = menu_text_edit
+				success 
+				menu_menu_start = offset_start
+				menu_menu_end = offset_end
+			END
+		PATCH_IF success BEGIN //RACE_TITLE patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "RACE_TITLE"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text%~ BEGIN
+					REPLACE_TEXTUALLY ~text.+['"]RACE_TITLE['"].*$~ ~text lua "getRaceSubraceTitle(getSubrace)"~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+			SET success = 1
+		END
+		PATCH_IF success BEGIN //race list patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenRace"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_GETSET_ELEMENT_AREA
+					STR_VAR element_text = EVAL "%element_text%"
+					RET coord_x_list=coord_x coord_y_list=coord_y width_list=width height_list=height
+				END
+			END
+		END
+		PATCH_IF success BEGIN //button done
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "OnDoneButtonClick"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_GETSET_ELEMENT_AREA
+					STR_VAR element_text = EVAL "%element_text_new%"
+					RET coord_x_btn=coord_x coord_y_btn=coord_y width_btn=width height_btn=height
+				END
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //get subrace
+					REPLACE_TEXTUALLY ~on[ %TAB%]return~ ~enabled "getSubrace == 0"~
+					REPLACE_TEXTUALLY ~text.+['"]DONE_BUTTON['"].*$~ ~text lua "getSubraceTitleButton(currSubrace)"~
+					REPLACE_TEXTUALLY ~clickable.+$~ ~clickable lua "zzSubrClaickable()"~
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "createSubraceTable(chargen.races[currentChargenRace].id)%LNL%%TAB%%TAB%%TAB%getSubrace = 1%LNL%%TAB%%TAB%%TAB%currChargenSubrace = 1"
+					RET element_text
+				END
+			
+				SET coord_x_btn = 100
+				SET coord_y_btn = 350
+				SET width_btn = 200
+				SET height_btn = 70
+		
+				LPF FC_GETSET_ELEMENT_AREA
+					INT_VAR set_area = 1 coord_x = coord_x_btn coord_y = coord_y_btn width = width_btn height = height_btn
+					STR_VAR element_text = EVAL "%element_text%"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //done subrace
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+					REPLACE_TEXTUALLY ~clickable.+$~ ~clickable lua "currChargenSubrace > 0"~ //%tilde%= nil
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0
+					STR_VAR
+						element_text = EVAL "%element_text_new%"
+						action_string = EVAL "onSubraceButton(currSubrace)"
+						action_check = EVAL "Infinity_PopMenu"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //race list patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenRace"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~rowheight~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%rowheight~
+					REPLACE_TEXTUALLY ~currentChargenRace~ ~currChargenSubrace~
+					REPLACE_TEXTUALLY ~chargen\.races\[rowNumber\]\.name~ ~sbSubraceData[rowNumber][1]~
+					REPLACE_TEXTUALLY ~table.+['"].*chargen\.races.*['"].*$~ ~table "sbSubraceData"~
+					PATCH_IF GAME_IS ~iwdee~ BEGIN
+						REPLACE_TEXTUALLY ~getRaceHighlightFrame~ ~zZgetRaceHighlightFrame~
+					END
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "if currChargenSubrace %tilde%= nil then%LNL%%TAB%%TAB%%TAB%%TAB%currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%end"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~rowheight~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%rowheight~
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "if currentChargenRace %tilde%= zZchgenRaceRow then currSubrace = 10 end"
+						action_check = EVAL "if[ %TAB%]+chargen"
+					RET element_text
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 position = 1
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "zZchgenRaceRow = currentChargenRace"
+						action_check = EVAL "OnRaceSelectButtonClick"
+					RET element_text
+				END
+				LPF FC_GETSET_ELEMENT_AREA
+					INT_VAR set_area = 1 coord_x = coord_x_list coord_y = coord_y_list width = width_list height = height_list
+					STR_VAR element_text = EVAL "%element_text%"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //patch class list
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenClass"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN 
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+						action_check = EVAL "end"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //patch kit list
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenKit]"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN 
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+						action_check = EVAL "end"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //patch alignment list
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "currentChargenAlignment"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR replace = 0 
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currSubrace = sbSubraceData[currChargenSubrace][3]%LNL%%TAB%%TAB%%TAB%getSubrace = 0"
+						action_check = EVAL "end"
+					RET element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //description patch
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "text" search_str = "rgKitOrAlignmentDesc()"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+					REPLACE_TEXTUALLY ~rgKitOrAlignmentDesc()~ ~SubRaceOrGeneralHelp(currChargenSubrace)~
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%area%TAB%~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		PATCH_IF success BEGIN //button cancel
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "OnCancelButtonClick"
+				RET element_text_new=element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //cancel subrace
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 1"%LNL%%TAB%%TAB%area%TAB%~
+				END
+				LPF FC_REPLACE_ELEMENT_ACTION
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_string = EVAL "currChargenSubrace = nil%LNL%%TAB%%TAB%%TAB%getSubrace = 0%LNL%%TAB%%TAB%%TAB%currSubrace = 10"
+					RET element_text
+				END
+				LPM FC_INSERT_MENU_ELEMENT
+				INNER_PATCH_SAVE ~element_text~ ~%element_text_new%~ BEGIN //cancel subrace
+					REPLACE_TEXTUALLY ~area[ %TAB%]~ ~enabled "getSubrace == 0"%LNL%%TAB%%TAB%area%TAB%~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+		LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+		PATCH_IF success BEGIN
+			SET len = STRING_LENGTH ~%menu_menu%~
+			DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+			INSERT_BYTES menu_menu_start len
+			WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+		END	ELSE BEGIN
+			PATCH_FAIL ~Cannot patch UI.MENU~
+		END
+	END	
+	
 	/* chargen.information */
 	REPLACE_TEXTUALLY ~chargen\.information~ ~zzCreateCharInfo(chargen.information)~
 	BUT_ONLY_IF_IT_CHANGES
-
-
 ////////////////////////
 DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 	SPRINT srTextDesc ~~
@@ -371,9 +1031,9 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 			END
 		END
 	END
-	
+
 	SPRINT if_patch ~if (zZsubrTitleTable[tostring(v.strRef)] %tilde%= nil) then~
-	
+
 	PATCH_IF GAME_IS ~iwdee~ BEGIN
 		SET ofs = INDEX_BUFFER(~addCharacterDetail(v\.bam,v\.current,Infinity_FetchString(v\.strRef))~)
 		PATCH_IF ( ofs >= 0 ) BEGIN
@@ -409,7 +1069,7 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 			INSERT_BYTES ofs codeLen
 			WRITE_ASCIIE ofs ~%code%~
 		END
-		
+
 		//dragonspear
 		PATCH_IF ( INSTALLED_DSUI ) BEGIN
 			SET ofs = 0
@@ -445,7 +1105,7 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 				END
 		END
 	END
-	
+
 	SET ofs = INDEX_BUFFER(~function[ %TAB%]+characterDescString(char)~)
 	PATCH_IF ( ofs >= 0 ) BEGIN
 		SET ofs2 = INDEX_BUFFER(~[%WNL%%LNL%%MNL%]end~ ofs)
@@ -470,11 +1130,14 @@ DEFINE_PATCH_MACRO SHOW_IN_CHARACTER_RECORD BEGIN
 			WRITE_ASCIIE ofs2 ~%code%~
 		END
 	END
+	PATCH_IF ( INSTALLED_IUI ) BEGIN
+		REPLACE_TEXTUALLY  ~Infinity_FetchString(char.race)~ ~zzSubraceString(characters[currentID])~
+	END
 END
 
 
 
-ACTION_IF INSTALLED_TIPUN BEGIN
+ACTION_IF ( INSTALLED_TIPUN )  BEGIN
 	OUTER_SPRINT file ~M_ZZRAND.LUA~
 END ELSE BEGIN
 	OUTER_SPRINT file ~M_RANDOM.LUA~
@@ -501,12 +1164,3 @@ COPY_EXISTING ~M_ZZFUNC.LUA~ ~override~
 		WRITE_ASCIIE offs1 ~%line%~
 	END
 	IF_EXISTS
-
-
-
-
-
-
-
-
-
